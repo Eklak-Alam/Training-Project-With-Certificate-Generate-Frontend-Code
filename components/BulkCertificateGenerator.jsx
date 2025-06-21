@@ -1,8 +1,7 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import { Loader2, Download, AlertCircle, Check } from 'lucide-react';
+import { Loader2, Download, AlertCircle, Check, X } from 'lucide-react';
 import { useApi } from '@/context/api-context';
 import CertificateTemplate from './CertificateTemplate';
 
@@ -14,6 +13,8 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [zipBlob, setZipBlob] = useState(null);
+  const cancelRef = useRef(false);
 
   const fetchStudents = async () => {
     setIsLoading(true);
@@ -28,29 +29,26 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
     }
   };
 
+  const cancelGeneration = () => {
+    cancelRef.current = true;
+    setIsLoading(false);
+    setError('Certificate generation cancelled');
+    setStatus('');
+  };
+
   const generateBulkCertificates = async () => {
     if (students.length === 0) {
       setError('No students found. Please fetch students first.');
       return;
     }
 
+    cancelRef.current = false;
     setIsLoading(true);
     setProgress(0);
     setStatus('Preparing certificates...');
     setError('');
     setSuccess('');
-
-    // Create a hidden container for rendering
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.left = '-9999px'; // Move off-screen
-    container.style.top = '0';
-    container.style.width = '210mm';
-    container.style.height = '297mm';
-    document.body.appendChild(container);
-
-    const { createRoot } = await import('react-dom/client');
-    const root = createRoot(container);
+    setZipBlob(null);
 
     try {
       const zip = new JSZip();
@@ -58,17 +56,31 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       const totalStudents = students.length;
       let generatedCount = 0;
 
+      // Create a temporary container for rendering
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-9999px';
+      container.style.top = '0';
+      container.style.width = '210mm';
+      container.style.height = '297mm';
+      document.body.appendChild(container);
+
+      const { createRoot } = await import('react-dom/client');
+      const root = createRoot(container);
+
       await document.fonts.ready;
 
       for (let i = 0; i < totalStudents; i++) {
+        if (cancelRef.current) break;
+
         const student = students[i];
         setStatus(`Generating certificate for ${student.name} (${i + 1}/${totalStudents})`);
 
         await new Promise(async (resolve) => {
           try {
-            // Render the certificate in the hidden container
+            // Render the certificate in the temporary container
             root.render(<CertificateTemplate studentData={student} />);
-
+            
             // Wait for rendering to complete
             await new Promise(r => setTimeout(r, 300));
 
@@ -78,18 +90,18 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
               throw new Error('Certificate element not rendered');
             }
 
-            // Generate PNG
+            // Generate PNG - ONLY for ZIP, no individual downloads
             const { toPng } = await import('html-to-image');
             const dataUrl = await toPng(certificateElement, {
               quality: 1,
               pixelRatio: 2,
-              cacheBust: true,
-              backgroundColor: '#fff9f9'
+              backgroundColor: '#f5e8d5',
+              cacheBust: true
             });
 
-            // Add to ZIP
+            // Add to ZIP only
             certificateFolder.file(
-              `Balaji_Training_Certificate_${student.panNumber}.png`,
+              `Balaji_Certificate_${student.panNumber}.png`,
               dataUrl.split(',')[1],
               { base64: true }
             );
@@ -104,27 +116,49 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
         });
       }
 
-      // Generate ZIP file
-      setStatus('Creating ZIP file...');
-      const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, 'Balaji_Training_Certificates.zip');
-      
-      setSuccess(`Successfully generated ${generatedCount} of ${totalStudents} certificates`);
-      setStatus('');
+      // Clean up temporary container
+      root.unmount();
+      document.body.removeChild(container);
+
+      if (!cancelRef.current && generatedCount > 0) {
+        // Generate ZIP file blob
+        setStatus('Creating ZIP file...');
+        const content = await zip.generateAsync({ type: 'blob' });
+        setZipBlob(content);
+        
+        setSuccess(`Successfully generated ${generatedCount} certificates. Ready to download.`);
+      } else if (generatedCount === 0) {
+        setError('No certificates were generated');
+      }
     } catch (err) {
       console.error('Error generating bulk certificates:', err);
       setError(err.message || 'Failed to generate certificates');
     } finally {
-      // Clean up
-      root.unmount();
-      document.body.removeChild(container);
+      setStatus('');
       setIsLoading(false);
       setProgress(0);
     }
   };
 
+  const downloadZip = () => {
+    if (zipBlob) {
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Balaji_Training_Certificates.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
   useEffect(() => {
     fetchStudents();
+    return () => {
+      // Cleanup on unmount
+      cancelRef.current = true;
+    };
   }, []);
 
   return (
@@ -146,7 +180,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
 
       {/* Progress Display */}
       {isLoading && (
-        <div className="space-y-2">
+        <div className="space-y-4">
           <div className="flex justify-between text-sm text-gray-600">
             <span>{status || 'Processing...'}</span>
             <span>{progress}%</span>
@@ -157,15 +191,22 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
               style={{ width: `${progress}%` }}
             ></div>
           </div>
+          <button
+            onClick={cancelGeneration}
+            className="flex items-center justify-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm"
+          >
+            <X className="mr-2" size={16} />
+            Cancel Generation
+          </button>
         </div>
       )}
 
-      {/* Action Button */}
-      <div className="flex justify-center">
+      {/* Action Buttons */}
+      <div className="flex justify-center gap-4 flex-wrap">
         <button
           onClick={generateBulkCertificates}
           disabled={isLoading || students.length === 0}
-          className="flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50 w-full max-w-md"
+          className="flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50 flex-1 max-w-md"
         >
           {isLoading ? (
             <>
@@ -175,10 +216,20 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
           ) : (
             <>
               <Download className="mr-2" size={18} />
-              Generate All Certificates ({students.length})
+              Generate Certificates ({students.length})
             </>
           )}
         </button>
+
+        {zipBlob && (
+          <button
+            onClick={downloadZip}
+            className="flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex-1 max-w-md"
+          >
+            <Download className="mr-2" size={18} />
+            Download ZIP File
+          </button>
+        )}
       </div>
 
       {/* Status Messages */}
@@ -196,92 +247,22 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
         </div>
       )}
 
-      {/* Static Certificate Sample Preview */}
+      {/* Certificate Preview - Static preview only */}
       <div className="mt-8 border-t pt-6">
-        <h3 className="text-lg font-medium mb-4 text-center">Certificate Sample Preview</h3>
+        <h3 className="text-lg font-medium mb-4 text-center">Certificate Preview</h3>
         <div className="flex justify-center">
-          <div className="border rounded-lg overflow-hidden shadow-md w-full max-w-4xl">
-            <div className="bg-[#fff9f9] p-6" style={{ fontFamily: "'Times New Roman', serif" }}>
-              {/* Header */}
-              <div className="text-center mb-6">
-                <h1 className="text-xl font-bold text-red-800 underline mb-1">
-                  BALAJI SHIKSHAN SANSTHAN SAMITI
-                </h1>
-                <h2 className="text-lg font-bold">
-                  25 Hrs Training Completion Certificate (Online)
-                </h2>
-              </div>
-
-              {/* Main Content */}
-              <div className="text-center space-y-3 text-sm">
-                <p>This is to certify that</p>
-                <p className="text-lg font-bold underline">SAMPLE STUDENT NAME</p>
-                <p>has successfully completed twenty-five hours training</p>
-                <p>through the online mode by</p>
-                <p className="font-bold">Balaji Shikshan Sansthan Samiti</p>
-                <p>using the portal www.balajitraining.in</p>
-                <p>for Life Insurance from</p>
-                <p className="font-bold">01-01-2023 to 05-01-2023</p>
-
-                <div className="pt-4 space-y-1">
-                  <p><strong>Branch:</strong> Sample Branch</p>
-                  <p><strong>LIC Registration No:</strong> LIC123456</p>
-                </div>
-
-                <p className="pt-4">The Candidate is sponsored/forwarded by:</p>
-                <p className="font-bold">LIC OF INDIA</p>
-              </div>
-
-              {/* Footer Section */}
-              <div className="mt-6 text-xs space-y-2">
-                <p>Balaji Shikshan Sansthan Samiti is an Accredited Institute for Life Insurance Agent's
-                  Training by Life Insurance Corporation of India by</p>
-                <p className="font-bold">Reference Number CO/MKTG/FFT/PRT.</p>
-                <p>This Approval is Valid Up to 30 June 2027.</p>
-
-                <div className="flex justify-between pt-4">
-                  <div>
-                    <p><strong>PAN NUMBER:</strong></p>
-                    <p className="font-bold">ABCDE1234F</p>
-                  </div>
-                  <div>
-                    <p><strong>CERTIFICATE REF.:</strong></p>
-                    <p className="font-bold">BS0001</p>
-                  </div>
-                  <div>
-                    <p><strong>SR. NO.:</strong></p>
-                    <p className="font-bold">1</p>
-                  </div>
-                </div>
-
-                {/* Signature Area */}
-                <div className="flex justify-between pt-8">
-                  <div className="text-center">
-                    <div className="h-12 mb-2 border-t border-black w-32 mx-auto"></div>
-                    <p></p>
-                  </div>
-                  <div className="text-center">
-                    <div className="h-12 mb-2">
-                      <img className='h-20 w-20' src="/stampsignature.jpeg" alt="" />
-                    </div>
-                    <p>Rekha Kohli</p>
-                    <p>In Charge</p>
-                  </div>
-                </div>
-
-                {/* Verification Link */}
-                <div className="pt-6 text-center">
-                  <p>You can verify training details at:</p>
-                  <p>https://balajitraining.in/verify-certificate/</p>
-                </div>
-
-                {/* Address */}
-                <div className="pt-2 text-center text-[0.7rem]">
-                  <p>Regd. Office: 523, MAKSH2001/48 Plaza, 9F Post, Manmanur, Jaipur - 300020 (Raj)</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CertificateTemplate 
+            studentData={{
+              name: "Sample Student",
+              panNumber: "ABCDE1234F",
+              licRegdNumber: "LIC123456",
+              branch: "Sample Branch",
+              srNo: 1,
+              startDate: "01-01-2023",
+              endDate: "05-01-2023"
+            }} 
+            isPreview={true} // Add this prop to prevent auto-download in CertificateTemplate
+          />
         </div>
       </div>
     </div>

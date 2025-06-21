@@ -6,11 +6,11 @@ const CertificateTemplate = ({ studentData }) => {
   const certificateRef = useRef(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  useEffect(() => {
-    if (studentData) {
-      generateCertificate();
-    }
-  }, [studentData]);
+  // useEffect(() => {
+  //   if (studentData) {
+  //     generateCertificate();
+  //   }
+  // }, [studentData]);
 
   const generateCertificate = async () => {
     if (!certificateRef.current) return;
@@ -86,7 +86,7 @@ const CertificateTemplate = ({ studentData }) => {
         ref={certificateRef}
         style={{
           width: '210mm',
-          height: '247mm',
+          height: '297mm',
           padding: '15px 25px',
           boxSizing: 'border-box',
           fontFamily: "'Times New Roman', serif",
@@ -108,7 +108,7 @@ const CertificateTemplate = ({ studentData }) => {
           left: '15px',
           right: '15px',
           bottom: '15px',
-          border: '1px solid #c19a65',
+          border: '4px solid #c19a65',
           pointerEvents: 'none'
         }}></div>
 
@@ -117,13 +117,13 @@ const CertificateTemplate = ({ studentData }) => {
           <div style={{ 
             textAlign: 'center',
             marginBottom: '5px',
-            marginTop: '30px'
+            marginTop: '50px'
           }}>
             <img 
-              src="/logo.png" 
+              src="/logo2.webp" 
               alt="Organization Logo"
               style={{
-                height: '70px',
+                height: '90px',
                 width: 'auto',
                 margin: '0 auto'
               }}
@@ -131,11 +131,11 @@ const CertificateTemplate = ({ studentData }) => {
           </div>
 
           <div style={{ 
-            textAlign: 'center', 
+            textAlign: 'center',
             marginBottom: '10px'
           }}>
             <h1 style={{ 
-              fontSize: '22px',
+              fontSize: '35px',
               fontWeight: 'bold',
               marginBottom: '3px',
               textDecoration: 'underline',
@@ -144,9 +144,10 @@ const CertificateTemplate = ({ studentData }) => {
               BALAJI SHIKSHAN SANSTHAN SAMITI
             </h1>
             <h2 style={{ 
-              fontSize: '18px',
+              fontSize: '22px',
               fontWeight: 'bold',
-              color: '#333'
+              color: '#333',
+              marginTop: '20px'
             }}>
               25 Hrs Training Completion Certificate (Online)
             </h2>
@@ -160,7 +161,7 @@ const CertificateTemplate = ({ studentData }) => {
           flexDirection: 'column',
           justifyContent: 'center',
           textAlign: 'center',
-          fontSize: '16px',
+          fontSize: '25px',
           margin: '5px auto',
           maxWidth: '95%'
         }}>
@@ -171,7 +172,7 @@ const CertificateTemplate = ({ studentData }) => {
             fontSize: '20px',
             fontWeight: 'bold',
             textDecoration: 'underline',
-            color: '#8B0000',
+            color: 'black',
             minHeight: '26px'
           }}>
             {studentData.name?.toUpperCase()}
@@ -212,12 +213,33 @@ const CertificateTemplate = ({ studentData }) => {
           fontSize: '14px',
           lineHeight: '1.3'
         }}>
-          <p style={{ marginBottom: '6px' }}>
-            Balaji Shikshan Sansthan Samiti is an Accredited Institute for Life Insurance Agent's Training by Life Insurance Corporation of India by Reference Number CO/MKTG/FPT/PRT.
-          </p>
-          <p style={{ marginBottom: '10px' }}>
-            This Approval is Valid Up to 30 June 2027.
-          </p>
+          <div style={{
+            textAlign: 'center',
+            padding: '20px 10px',
+            marginTop: '30px',
+            maxWidth: '800px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}>
+            <p style={{
+              marginBottom: '16px',
+              color: '#8B0000',
+              fontSize: '18px',
+              fontWeight: 'bold',
+            }}>
+              Balaji Shikshan Sansthan Samiti
+            </p>
+
+            <p style={{
+              fontSize: '16px',
+              lineHeight: '1.6',
+              color: '#333',
+              padding: '0 20px',
+            }}>
+              is an Accredited Institute for Life Insurance Agent's Training by Life Insurance Corporation of India by Reference Number <strong>CO/MKTG/FPT/PRT</strong>. This approval is valid up to <strong>30 June 2027</strong>.
+            </p>
+          </div>
+
 
           {/* Student info grid */}
           <div style={{ 
@@ -287,10 +309,10 @@ const CertificateTemplate = ({ studentData }) => {
                 justifyContent: 'flex-end'
               }}>
                 <img 
-                  src="/stamp.png" 
+                  src="/stamp2.png" 
                   alt="Official Stamp"
                   style={{
-                    height: '60px',
+                    height: '90px',
                     width: 'auto',
                     maxWidth: '120px'
                   }}
@@ -306,7 +328,8 @@ const CertificateTemplate = ({ studentData }) => {
             textAlign: 'center',
             fontSize: '13px',
             borderTop: '1px solid #d4a76a',
-            paddingTop: '6px'
+            paddingTop: '6px',
+            paddingBottom: '40px'
           }}>
             <p><strong>Verify at:</strong> https://balajitraining.in/verify-certificate/</p>
             <p style={{ marginTop: '4px' }}><strong>Regd. Office:</strong> 523, MANSAROWAR PLAZA, 5th Floor, Mansarowar Jaipur—302020 (Raj)</p>
