@@ -15,7 +15,6 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Fetch all students
   const fetchStudents = async () => {
     setIsLoading(true);
     setError('');
@@ -29,7 +28,6 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
     }
   };
 
-  // Generate certificates and create ZIP
   const generateBulkCertificates = async () => {
     if (students.length === 0) {
       setError('No students found. Please fetch students first.');
@@ -42,16 +40,13 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
     setError('');
     setSuccess('');
 
-    // Create a container for rendering
+    // Create a hidden container for rendering
     const container = document.createElement('div');
     container.style.position = 'fixed';
-    container.style.left = '0';
+    container.style.left = '-9999px'; // Move off-screen
     container.style.top = '0';
     container.style.width = '210mm';
     container.style.height = '297mm';
-    container.style.visibility = 'visible';
-    container.style.opacity = '1';
-    container.style.zIndex = '9999';
     document.body.appendChild(container);
 
     const { createRoot } = await import('react-dom/client');
@@ -63,7 +58,6 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       const totalStudents = students.length;
       let generatedCount = 0;
 
-      // Preload fonts
       await document.fonts.ready;
 
       for (let i = 0; i < totalStudents; i++) {
@@ -72,7 +66,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
 
         await new Promise(async (resolve) => {
           try {
-            // Render the certificate
+            // Render the certificate in the hidden container
             root.render(<CertificateTemplate studentData={student} />);
 
             // Wait for rendering to complete
@@ -83,9 +77,6 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
             if (!certificateElement) {
               throw new Error('Certificate element not rendered');
             }
-
-            // Force layout calculation
-            certificateElement.offsetHeight;
 
             // Generate PNG
             const { toPng } = await import('html-to-image');
@@ -205,12 +196,13 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
         </div>
       )}
 
-      {/* Sample Preview - Fixed at bottom */}
+      {/* Static Certificate Sample Preview */}
       <div className="mt-8 border-t pt-6">
         <h3 className="text-lg font-medium mb-4 text-center">Certificate Sample Preview</h3>
         <div className="flex justify-center">
-          <div className="border rounded-lg overflow-hidden shadow-md w-full max-w-2xl">
-            <div className="bg-white p-4">
+          <div className="border rounded-lg overflow-hidden shadow-md w-full max-w-4xl">
+            <div className="bg-[#fff9f9] p-6" style={{ fontFamily: "'Times New Roman', serif" }}>
+              {/* Header */}
               <div className="text-center mb-6">
                 <h1 className="text-xl font-bold text-red-800 underline mb-1">
                   BALAJI SHIKSHAN SANSTHAN SAMITI
@@ -219,16 +211,74 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
                   25 Hrs Training Completion Certificate (Online)
                 </h2>
               </div>
-              
-              <div className="text-center space-y-4">
+
+              {/* Main Content */}
+              <div className="text-center space-y-3 text-sm">
                 <p>This is to certify that</p>
-                <p className="text-xl font-bold underline">SAMPLE STUDENT NAME</p>
+                <p className="text-lg font-bold underline">SAMPLE STUDENT NAME</p>
                 <p>has successfully completed twenty-five hours training</p>
                 <p>through the online mode by</p>
                 <p className="font-bold">Balaji Shikshan Sansthan Samiti</p>
                 <p>using the portal www.balajitraining.in</p>
                 <p>for Life Insurance from</p>
                 <p className="font-bold">01-01-2023 to 05-01-2023</p>
+
+                <div className="pt-4 space-y-1">
+                  <p><strong>Branch:</strong> Sample Branch</p>
+                  <p><strong>LIC Registration No:</strong> LIC123456</p>
+                </div>
+
+                <p className="pt-4">The Candidate is sponsored/forwarded by:</p>
+                <p className="font-bold">LIC OF INDIA</p>
+              </div>
+
+              {/* Footer Section */}
+              <div className="mt-6 text-xs space-y-2">
+                <p>Balaji Shikshan Sansthan Samiti is an Accredited Institute for Life Insurance Agent's
+                  Training by Life Insurance Corporation of India by</p>
+                <p className="font-bold">Reference Number CO/MKTG/FFT/PRT.</p>
+                <p>This Approval is Valid Up to 30 June 2027.</p>
+
+                <div className="flex justify-between pt-4">
+                  <div>
+                    <p><strong>PAN NUMBER:</strong></p>
+                    <p className="font-bold">ABCDE1234F</p>
+                  </div>
+                  <div>
+                    <p><strong>CERTIFICATE REF.:</strong></p>
+                    <p className="font-bold">BS0001</p>
+                  </div>
+                  <div>
+                    <p><strong>SR. NO.:</strong></p>
+                    <p className="font-bold">1</p>
+                  </div>
+                </div>
+
+                {/* Signature Area */}
+                <div className="flex justify-between pt-8">
+                  <div className="text-center">
+                    <div className="h-12 mb-2 border-t border-black w-32 mx-auto"></div>
+                    <p></p>
+                  </div>
+                  <div className="text-center">
+                    <div className="h-12 mb-2">
+                      <img className='h-20 w-20' src="/stampsignature.jpeg" alt="" />
+                    </div>
+                    <p>Rekha Kohli</p>
+                    <p>In Charge</p>
+                  </div>
+                </div>
+
+                {/* Verification Link */}
+                <div className="pt-6 text-center">
+                  <p>You can verify training details at:</p>
+                  <p>https://balajitraining.in/verify-certificate/</p>
+                </div>
+
+                {/* Address */}
+                <div className="pt-2 text-center text-[0.7rem]">
+                  <p>Regd. Office: 523, MAKSH2001/48 Plaza, 9F Post, Manmanur, Jaipur - 300020 (Raj)</p>
+                </div>
               </div>
             </div>
           </div>

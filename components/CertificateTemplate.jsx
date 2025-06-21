@@ -1,13 +1,10 @@
-'use client'
+'use client';
 import { useRef, useEffect, useState } from 'react';
-import { toPng } from 'html-to-image';
 import { Download, Loader2 } from 'lucide-react';
 
 const CertificateTemplate = ({ studentData }) => {
   const certificateRef = useRef(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [certificateUrl, setCertificateUrl] = useState('');
-  const [hasDownloaded, setHasDownloaded] = useState(false);
 
   useEffect(() => {
     if (studentData) {
@@ -20,44 +17,38 @@ const CertificateTemplate = ({ studentData }) => {
 
     setIsGenerating(true);
     try {
-      // Create a temporary container for accurate rendering
       const tempContainer = document.createElement('div');
-      tempContainer.style.position = 'fixed';
-      tempContainer.style.left = '0';
-      tempContainer.style.top = '0';
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px';
       tempContainer.style.width = '210mm';
       tempContainer.style.height = '297mm';
-      tempContainer.style.visibility = 'visible';
-      tempContainer.style.opacity = '1';
-      tempContainer.style.zIndex = '9999';
       document.body.appendChild(tempContainer);
 
-      // Clone the certificate node to avoid layout issues
       const clonedNode = certificateRef.current.cloneNode(true);
       tempContainer.appendChild(clonedNode);
 
-      // Ensure fonts are loaded
-      await document.fonts.ready;
-      
-      // Wait for rendering to complete
+      await Promise.all([
+        loadImage('/logo.png'),
+        loadImage('/stamp.png'),
+        loadImage('/sign.png'),
+        document.fonts.ready
+      ]);
+
+      clonedNode.offsetHeight;
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Generate the image with proper dimensions
       const { toPng } = await import('html-to-image');
       const dataUrl = await toPng(clonedNode, {
         quality: 1,
-        pixelRatio: 2,
-        cacheBust: true,
-        backgroundColor: '#fff9f9',
+        pixelRatio: 3,
+        backgroundColor: '#f5e8d5',
         style: {
           width: '210mm',
           height: '297mm'
         }
       });
 
-      setCertificateUrl(dataUrl);
-      
-      // Clean up
+      downloadCertificate(dataUrl);
       document.body.removeChild(tempContainer);
     } catch (error) {
       console.error('Error generating certificate:', error);
@@ -66,18 +57,21 @@ const CertificateTemplate = ({ studentData }) => {
     }
   };
 
-  useEffect(() => {
-    if (certificateUrl && !isGenerating && !hasDownloaded) {
-      downloadCertificate(certificateUrl);
-      setHasDownloaded(true);
-    }
-  }, [certificateUrl, isGenerating, hasDownloaded]);
+  const loadImage = (src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = resolve;
+      img.onerror = (e) => {
+        console.error(`Failed to load image: ${src}`);
+        reject(e);
+      };
+    });
+  };
 
-  const downloadCertificate = (data = certificateUrl) => {
-    if (!data) return;
-
+  const downloadCertificate = (data) => {
     const link = document.createElement('a');
-    link.download = `Balaji_Training_Certificate_${studentData.panNumber}.png`;
+    link.download = `Balaji_Certificate_${studentData.panNumber}.png`;
     link.href = data;
     document.body.appendChild(link);
     link.click();
@@ -87,221 +81,247 @@ const CertificateTemplate = ({ studentData }) => {
   if (!studentData) return null;
 
   return (
-    <div className="w-full">
-      {/* Certificate template container */}
+     <div className="w-full">
       <div 
         ref={certificateRef}
         style={{
           width: '210mm',
-          minHeight: '297mm',
-          padding: '40px 50px',
+          height: '247mm',
+          padding: '15px 25px',
           boxSizing: 'border-box',
           fontFamily: "'Times New Roman', serif",
-          background: '#fff9f9',
+          background: '#f5e8d5',
           margin: '0 auto',
-          lineHeight: '1.5',
+          lineHeight: '1.3',
           position: 'relative',
-          overflow: 'visible'
+          overflow: 'hidden',
+          border: '15px solid #d4a76a',
+          backgroundImage: 'linear-gradient(to bottom, #f5e8d5, #f0e0c8)',
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
-         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <h1 style={{ 
-            fontSize: '24px',
-            fontWeight: 'bold',
+        {/* Decorative border */}
+        <div style={{
+          position: 'absolute',
+          top: '15px',
+          left: '15px',
+          right: '15px',
+          bottom: '15px',
+          border: '1px solid #c19a65',
+          pointerEvents: 'none'
+        }}></div>
+
+        {/* Header Section - Made more compact */}
+        <div style={{ flex: '0 0 auto' }}>
+          <div style={{ 
+            textAlign: 'center',
             marginBottom: '5px',
-            textDecoration: 'underline',
-            color: '#8B0000'
+            marginTop: '30px'
           }}>
-            BALAJI SHIKSHAN SANSTHAN SAMITI
-          </h1>
-          <h2 style={{ 
-            fontSize: '20px',
-            fontWeight: 'bold',
-            marginBottom: '30px'
+            <img 
+              src="/logo.png" 
+              alt="Organization Logo"
+              style={{
+                height: '70px',
+                width: 'auto',
+                margin: '0 auto'
+              }}
+            />
+          </div>
+
+          <div style={{ 
+            textAlign: 'center', 
+            marginBottom: '10px'
           }}>
-            25 Hrs Training Completion Certificate (Online)
-          </h2>
+            <h1 style={{ 
+              fontSize: '22px',
+              fontWeight: 'bold',
+              marginBottom: '3px',
+              textDecoration: 'underline',
+              color: '#8B0000'
+            }}>
+              BALAJI SHIKSHAN SANSTHAN SAMITI
+            </h1>
+            <h2 style={{ 
+              fontSize: '18px',
+              fontWeight: 'bold',
+              color: '#333'
+            }}>
+              25 Hrs Training Completion Certificate (Online)
+            </h2>
+          </div>
         </div>
 
-        {/* Main Content */}
+        {/* Main Content - Adjusted spacing */}
         <div style={{ 
+          flex: '1 1 auto',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
           textAlign: 'center',
-          fontSize: '18px',
-          margin: '0 auto',
-          maxWidth: '90%'
+          fontSize: '16px',
+          margin: '5px auto',
+          maxWidth: '95%'
         }}>
-          <p>This is to certify that</p>
+          <p>This is to certify that <strong>Mr/Mrs/Miss</strong></p>
           
           <div style={{
-            margin: '25px 0',
-            fontSize: '22px',
+            margin: '12px 0',
+            fontSize: '20px',
             fontWeight: 'bold',
             textDecoration: 'underline',
-            minHeight: '30px'
+            color: '#8B0000',
+            minHeight: '26px'
           }}>
             {studentData.name?.toUpperCase()}
           </div>
 
-          <p>has successfully completed twenty-five hours training</p>
-          <p>through the online mode by</p>
-          
-          <p style={{ 
-            fontWeight: 'bold', 
-            margin: '15px 0',
-            lineHeight: '1.4'
-          }}>
-            Balaji Shikshan Sansthan Samiti,<br />
-            using the portal www.balajitraining.in
-          </p>
-
-          <p>for Life Insurance from</p>
+          <div style={{ marginBottom: '12px' }}>
+            <p>has successfully completed twenty-five hours training through</p>
+            <p>the online mode by Balaji Shikshan Sansthan Samiti,</p>
+            <p>using the portal www.balajitraining.in for Life Insurance from</p>
+          </div>
 
           <p style={{ 
             fontWeight: 'bold', 
-            margin: '15px 0',
-            lineHeight: '1.4'
+            margin: '10px 0',
+            fontSize: '18px'
           }}>
             {studentData.startDate} to {studentData.endDate}
           </p>
 
-          <div style={{ 
-            margin: '30px 0',
-            lineHeight: '1.6'
-          }}>
-            <p><strong>Branch:</strong> {studentData.branch}</p>
-            <p><strong>LIC Registration No:</strong> {studentData.licRegdNumber}</p>
-          </div>
-
-          <p style={{ margin: '30px 0 15px' }}>
+          <p style={{ margin: '12px 0 8px' }}>
             The Candidate is sponsored/forwarded by:
           </p>
 
           <p style={{ 
             fontWeight: 'bold', 
-            fontSize: '20px', 
-            marginBottom: '30px'
+            fontSize: '18px', 
+            marginBottom: '15px',
+            color: '#8B0000'
           }}>
             LIC OF INDIA
           </p>
         </div>
 
-        {/* Footer Section */}
+        {/* Footer Section - Made more compact */}
         <div style={{
-          marginTop: '40px',
-          fontSize: '16px',
-          lineHeight: '1.5'
+          flex: '0 0 auto',
+          marginTop: 'auto',
+          fontSize: '14px',
+          lineHeight: '1.3'
         }}>
-          <p style={{ marginBottom: '15px' }}>
-            Balaji Shikshan Sansthan Samiti is an Accredited Institute for Life Insurance Agent's
-            Training by Life Insurance Corporation of India by
+          <p style={{ marginBottom: '6px' }}>
+            Balaji Shikshan Sansthan Samiti is an Accredited Institute for Life Insurance Agent's Training by Life Insurance Corporation of India by Reference Number CO/MKTG/FPT/PRT.
           </p>
-          <p style={{ 
-            fontWeight: 'bold', 
-            margin: '10px 0',
-            lineHeight: '1.4'
-          }}>
-            Reference Number CO/MKTG/FFT/PRT.
-          </p>
-          <p style={{ marginBottom: '30px' }}>
+          <p style={{ marginBottom: '10px' }}>
             This Approval is Valid Up to 30 June 2027.
           </p>
 
+          {/* Student info grid */}
           <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            flexWrap: 'wrap',
-            marginBottom: '20px'
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '8px',
+            marginBottom: '12px',
+            fontSize: '14px'
           }}>
-            <div style={{ minWidth: '120px' }}>
-              <p><strong>PAN NUMBER:</strong></p>
-              <p style={{ fontWeight: 'bold' }}>{studentData.panNumber}</p>
+            <div>
+              <p><strong>PAN NUMBER:</strong> {studentData.panNumber}</p>
+              <p><strong>LIC REGD:</strong> {studentData.licRegdNumber}</p>
             </div>
-            <div style={{ minWidth: '120px' }}>
-              <p><strong>CERTIFICATE REF.:</strong></p>
-              <p style={{ fontWeight: 'bold' }}>BS{studentData.srNo?.toString().padStart(4, '0')}</p>
-            </div>
-            <div style={{ minWidth: '120px' }}>
-              <p><strong>SR. NO.:</strong></p>
-              <p style={{ fontWeight: 'bold' }}>{studentData.srNo}</p>
+            <div>
+              <p><strong>BRANCH:</strong> {studentData.branch}</p>
+              <p><strong>CERTIFICATE REF.:</strong> BS{studentData.srNo?.toString().padStart(4, '0')}</p>
             </div>
           </div>
 
-          {/* Signature Area */}
+          {/* Signature and Stamp Section */}
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            marginTop: '60px',
-            alignItems: 'flex-end',
-            flexWrap: 'wrap'
+            marginTop: '15px',
+            alignItems: 'flex-end'
           }}>
             <div style={{ 
-              textAlign: 'center', 
-              marginBottom: '20px',
-              flex: 1,
-              minWidth: '200px'
+              textAlign: 'left',
+              width: '180px'
             }}>
               <div style={{ 
-                height: '80px', 
-                marginBottom: '10px',
+                height: '60px',
+                marginBottom: '5px',
                 display: 'flex',
-                justifyContent: 'center'
+                justifyContent: 'flex-start'
               }}>
-                {/* Signature image would go here */}
+                <img 
+                  src="/sign.png" 
+                  alt="Signature"
+                  style={{
+                    height: '55px',
+                    width: 'auto',
+                    maxWidth: '150px'
+                  }}
+                />
               </div>
-              <div style={{ 
-                borderTop: '1px solid #000', 
-                width: '200px', 
-                margin: '0 auto' 
-              }}></div>
-              <p style={{ marginTop: '5px' }}>RENHA KOHLI</p>
+              <p style={{ 
+                fontWeight: 'bold',
+                borderTop: '1px solid #000',
+                paddingTop: '2px',
+                width: '150px',
+                fontSize: '15px'
+              }}>
+                Rekha Kohli
+              </p>
+              <p style={{ fontSize: '14px' }}>In Charge</p>
             </div>
 
             <div style={{ 
-              textAlign: 'center', 
-              marginBottom: '20px',
-              flex: 1,
-              minWidth: '200px'
+              textAlign: 'right',
+              width: '180px'
             }}>
               <div style={{ 
-                height: '80px', 
-                marginBottom: '10px',
+                height: '60px',
+                marginBottom: '5px',
                 display: 'flex',
-                justifyContent: 'center'
+                justifyContent: 'flex-end'
               }}>
-                {/* Stamp image would go here */}
+                <img 
+                  src="/stamp.png" 
+                  alt="Official Stamp"
+                  style={{
+                    height: '60px',
+                    width: 'auto',
+                    maxWidth: '120px'
+                  }}
+                />
               </div>
-              <p>Official Stamp</p>
+              <p style={{ fontSize: '14px' }}>Official Stamp</p>
             </div>
           </div>
 
-          {/* Verification Link */}
+          {/* Verification and Address */}
           <div style={{ 
-            marginTop: '40px',
+            marginTop: '10px',
             textAlign: 'center',
-            fontSize: '14px'
+            fontSize: '13px',
+            borderTop: '1px solid #d4a76a',
+            paddingTop: '6px'
           }}>
-            <p>You can verify training details at:</p>
-            <p>https://balajitraining.in/verify-certificate/</p>
-          </div>
-
-          {/* Address */}
-          <div style={{ 
-            marginTop: '20px',
-            textAlign: 'center',
-            fontSize: '12px'
-          }}>
-            <p>Regd. Office: 523, MAKSH2001/48 Plaza, 9F Post, Manmanur, Jaipur - 300020 (Raj)</p>
+            <p><strong>Verify at:</strong> https://balajitraining.in/verify-certificate/</p>
+            <p style={{ marginTop: '4px' }}><strong>Regd. Office:</strong> 523, MANSAROWAR PLAZA, 5th Floor, Mansarowar Jaipur—302020 (Raj)</p>
+            <p><strong>Mob:</strong> 9352793163 <strong>URL:</strong> www.balajitraining.in</p>
+            <p><strong>Email:</strong> incharge.balajitraining@gmail.com</p>
           </div>
         </div>
       </div>
 
-      {/* Download Controls */}
-      <div className="flex justify-center mt-6 gap-4">
+      {/* Download Button */}
+      <div className="flex justify-center mt-4">
         <button
-          onClick={() => downloadCertificate()}
-          disabled={!certificateUrl || isGenerating}
-          className="flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50"
+          onClick={generateCertificate}
+          disabled={isGenerating}
+          className="flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium disabled:opacity-50"
         >
           {isGenerating ? (
             <>
@@ -316,28 +336,6 @@ const CertificateTemplate = ({ studentData }) => {
           )}
         </button>
       </div>
-
-      {/* Preview - now with proper dimensions */}
-      {certificateUrl && (
-        <div className="mt-8 w-full">
-          <h3 className="text-lg font-medium mb-2 text-center">Certificate Preview</h3>
-          <div className="flex justify-center">
-            <div className="border rounded-lg overflow-hidden shadow-md" style={{ maxWidth: '100%' }}>
-              <img 
-                src={certificateUrl} 
-                alt="Certificate Preview" 
-                className="w-full"
-                style={{ 
-                  maxHeight: '80vh',
-                  objectFit: 'contain',
-                  display: 'block',
-                  margin: '0 auto'
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
