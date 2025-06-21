@@ -1,7 +1,7 @@
 'use client';
 import CertificateTemplate from '@/components/CertificateTemplate';
 import { useApi } from '@/context/api-context';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Download, FileText, Loader2, User, CalendarDays, BookOpen, Hash, Mail, Phone, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
@@ -49,36 +49,108 @@ const LICVerificationPage = () => {
     }
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { scale: 0.95, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 120,
+        damping: 15
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 py-12 pt-28">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-12 pt-28">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
           className="text-center mb-12"
         >
-          <div className="flex items-center justify-center mb-4">
-            <ShieldCheck className="text-blue-600 mr-2" size={32} />
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+          <motion.div variants={itemVariants} className="flex items-center justify-center mb-4">
+            <motion.div 
+              animate={{ 
+                rotate: [0, 10, -10, 0],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{ 
+                repeat: Infinity, 
+                repeatType: "reverse", 
+                duration: 2 
+              }}
+            >
+              <ShieldCheck className="text-blue-600 mr-2" size={32} />
+            </motion.div>
+            <motion.h1 
+              className="text-3xl md:text-4xl font-bold text-gray-800 bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"
+              variants={itemVariants}
+            >
               LIC Training Certificate Verification
-            </h1>
-          </div>
-          <div className="w-24 h-1.5 bg-blue-600 mx-auto mb-6 rounded-full"></div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            </motion.h1>
+          </motion.div>
+
+          <motion.div 
+            variants={itemVariants}
+            className="w-24 h-1.5 bg-gradient-to-r from-blue-400 to-indigo-500 mx-auto mb-6 rounded-full"
+          />
+
+          <motion.p 
+            className="text-lg text-gray-600 max-w-2xl mx-auto"
+            variants={itemVariants}
+          >
             Verify the authenticity of training certificates issued by iCall Soft Pvt. Ltd.
-          </p>
+          </motion.p>
         </motion.div>
 
-        <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={cardVariants}
+          className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden border border-white/20 backdrop-blur-sm"
+        >
           <div className="p-6 md:p-8">
-            <form onSubmit={handleVerify} className="mb-8">
-              <div className="mb-6">
+            <motion.form 
+              onSubmit={handleVerify} 
+              className="mb-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={itemVariants} className="mb-6">
                 <label htmlFor="panNumber" className="block text-lg font-medium text-gray-700 mb-2">
                   Enter PAN Number
                 </label>
                 <div className="relative">
-                  <input
+                  <motion.input
                     type="text"
                     id="panNumber"
                     value={panNumber}
@@ -91,32 +163,48 @@ const LICVerificationPage = () => {
                     }`}
                     placeholder="e.g. ABCDE1234F"
                     maxLength="10"
+                    whileFocus={{ 
+                      scale: 1.02,
+                      boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.5)"
+                    }}
                   />
                 </div>
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-2 flex items-center text-sm text-red-600"
-                  >
-                    <AlertCircle className="mr-2" size={16} />
-                    {error}
-                  </motion.div>
-                )}
-              </div>
+                <AnimatePresence>
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="mt-2 flex items-center text-sm text-red-600"
+                    >
+                      <AlertCircle className="mr-2" size={16} />
+                      {error}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
 
               <motion.button
                 type="submit"
-                className={`w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center justify-center transition-colors ${
+                className={`w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium flex items-center justify-center transition-all ${
                   isLoading ? 'opacity-80 cursor-not-allowed' : ''
                 }`}
-                whileHover={!isLoading ? { scale: 1.02 } : {}}
+                whileHover={!isLoading ? { 
+                  scale: 1.02,
+                  boxShadow: "0 4px 12px rgba(59, 130, 246, 0.25)"
+                } : {}}
                 whileTap={!isLoading ? { scale: 0.98 } : {}}
                 disabled={isLoading}
+                variants={itemVariants}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 animate-spin" size={20} />
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    >
+                      <Loader2 className="mr-2" size={20} />
+                    </motion.div>
                     Verifying...
                   </>
                 ) : (
@@ -126,42 +214,77 @@ const LICVerificationPage = () => {
                   </>
                 )}
               </motion.button>
-            </form>
+            </motion.form>
 
-            {studentData && (
-              <>
+            <AnimatePresence>
+              {studentData && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0,
+                    transition: { type: "spring", stiffness: 100 }
+                  }}
+                  exit={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.3 }}
                   className="border border-gray-200 rounded-xl overflow-hidden mb-8"
                 >
-                  <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4 text-white">
+                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
                     <div className="flex items-center">
-                      <FileText className="mr-3" size={24} />
+                      <motion.div
+                        animate={{
+                          rotate: [0, 10, -10, 0],
+                          transition: { repeat: Infinity, duration: 3 }
+                        }}
+                      >
+                        <FileText className="mr-3" size={24} />
+                      </motion.div>
                       <h3 className="text-xl font-semibold">Certificate Details</h3>
                     </div>
                   </div>
 
                   <div className="p-6">
-                    {/* ... (keep your existing student details display) ... */}
+                    {/* Student details content */}
                   </div>
                 </motion.div>
+              )}
+            </AnimatePresence>
 
-                {/* This is where the CertificateTemplate will appear */}
-                <CertificateTemplate studentData={studentData} />
-              </>
-            )}
+            <AnimatePresence>
+              {studentData && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 10,
+                    delay: 0.2
+                  }}
+                  className="w-full"
+                >
+                  <CertificateTemplate studentData={studentData} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="mt-12 text-center text-gray-500 text-sm">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 text-center text-gray-500 text-sm"
+        >
           <p>For any verification issues, please contact our support team</p>
-          <p className="mt-1">
+          <motion.p 
+            className="mt-1"
+            whileHover={{ scale: 1.02 }}
+          >
             <Mail className="inline mr-1" size={14} /> support@icallinsurance.com | 
             <Phone className="inline mx-1" size={14} /> 9989650553
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </div>
     </div>
   );

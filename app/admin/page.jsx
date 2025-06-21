@@ -1,8 +1,9 @@
 'use client'
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, UserPlus, ChevronRight, Check, AlertCircle } from 'lucide-react';
+import { Upload, UserPlus, ChevronRight, Check, AlertCircle, FileArchive } from 'lucide-react';
 import { useApi } from '@/context/api-context';
+import BulkCertificateGenerator from '@/components/BulkCertificateGenerator';
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('form');
@@ -26,24 +27,31 @@ const AdminPage = () => {
         {/* Header */}
         <div className="p-6 bg-blue-600 text-white">
           <h1 className="text-2xl md:text-3xl font-bold">Student Management</h1>
-          <p className="mt-1 text-blue-100">Add new student records</p>
+          <p className="mt-1 text-blue-100">Manage student records and certificates</p>
         </div>
 
         {/* Tabs */}
         <div className="flex border-b border-gray-200">
           <button
             onClick={() => { setActiveTab('form'); clearMessages(); }}
-            className={`flex items-center px-6 py-3 font-medium ${activeTab === 'form' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`flex items-center px-4 py-3 font-medium text-sm ${activeTab === 'form' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <UserPlus className="mr-2 h-5 w-5" />
+            <UserPlus className="mr-2 h-4 w-4" />
             Form Entry
           </button>
           <button
             onClick={() => { setActiveTab('file'); clearMessages(); }}
-            className={`flex items-center px-6 py-3 font-medium ${activeTab === 'file' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`flex items-center px-4 py-3 font-medium text-sm ${activeTab === 'file' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <Upload className="mr-2 h-5 w-5" />
+            <Upload className="mr-2 h-4 w-4" />
             File Upload
+          </button>
+          <button
+            onClick={() => { setActiveTab('certificates'); clearMessages(); }}
+            className={`flex items-center px-4 py-3 font-medium text-sm ${activeTab === 'certificates' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <FileArchive className="mr-2 h-4 w-4" />
+            Bulk Certificates
           </button>
         </div>
 
@@ -63,8 +71,13 @@ const AdminPage = () => {
                   setSuccessMessage={setSuccessMessage}
                   setErrorMessage={setErrorMessage}
                 />
-              ) : (
+              ) : activeTab === 'file' ? (
                 <FileUpload 
+                  setSuccessMessage={setSuccessMessage}
+                  setErrorMessage={setErrorMessage}
+                />
+              ) : (
+                <BulkCertificateGenerator
                   setSuccessMessage={setSuccessMessage}
                   setErrorMessage={setErrorMessage}
                 />
@@ -99,7 +112,6 @@ const AdminPage = () => {
     </div>
   );
 };
-
 // Form Component
 const StudentForm = ({ setSuccessMessage, setErrorMessage }) => {
   const [formData, setFormData] = useState({

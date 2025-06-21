@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useRef, useEffect, useState } from 'react';
 import { toPng } from 'html-to-image';
 import { Download, Loader2 } from 'lucide-react';
@@ -20,13 +20,45 @@ const CertificateTemplate = ({ studentData }) => {
 
     setIsGenerating(true);
     try {
-      const dataUrl = await toPng(certificateRef.current, {
+      // Create a temporary container for accurate rendering
+      const tempContainer = document.createElement('div');
+      tempContainer.style.position = 'fixed';
+      tempContainer.style.left = '0';
+      tempContainer.style.top = '0';
+      tempContainer.style.width = '210mm';
+      tempContainer.style.height = '297mm';
+      tempContainer.style.visibility = 'visible';
+      tempContainer.style.opacity = '1';
+      tempContainer.style.zIndex = '9999';
+      document.body.appendChild(tempContainer);
+
+      // Clone the certificate node to avoid layout issues
+      const clonedNode = certificateRef.current.cloneNode(true);
+      tempContainer.appendChild(clonedNode);
+
+      // Ensure fonts are loaded
+      await document.fonts.ready;
+      
+      // Wait for rendering to complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Generate the image with proper dimensions
+      const { toPng } = await import('html-to-image');
+      const dataUrl = await toPng(clonedNode, {
         quality: 1,
-        pixelRatio: 3,
+        pixelRatio: 2,
         cacheBust: true,
-        backgroundColor: '#fff9f9'
+        backgroundColor: '#fff9f9',
+        style: {
+          width: '210mm',
+          height: '297mm'
+        }
       });
+
       setCertificateUrl(dataUrl);
+      
+      // Clean up
+      document.body.removeChild(tempContainer);
     } catch (error) {
       console.error('Error generating certificate:', error);
     } finally {
@@ -55,231 +87,211 @@ const CertificateTemplate = ({ studentData }) => {
   if (!studentData) return null;
 
   return (
-    <div className="mt-8 w-full">
+    <div className="w-full">
       {/* Certificate template container */}
-      <div className="w-full flex justify-center">
-        <div 
-          ref={certificateRef}
-          className="bg-white"
-          style={{
-            width: '210mm',
-            minHeight: '297mm',
-            position: 'relative',
-            padding: '40px 50px',
-            boxSizing: 'border-box',
-            fontFamily: "'Times New Roman', serif",
-            background: '#fff9f9',
-            boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-            margin: '0 auto',
-            lineHeight: '1.5'
-          }}
-        >
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <img 
-              src="/balaji-logo.png"
-              alt="Balaji Shikshan Sansthan Samiti"
-              style={{ height: '80px', marginBottom: '15px' }}
-            />
-            <h1 style={{ 
-              fontSize: '24px',
-              fontWeight: 'bold',
-              marginBottom: '5px',
-              textDecoration: 'underline',
-              color: '#8B0000'
-            }}>
-              BALAJI SHIKSHAN SANSTHAN SAMITI
-            </h1>
-            <h2 style={{ 
-              fontSize: '20px',
-              fontWeight: 'bold',
-              marginBottom: '30px'
-            }}>
-              25 Hrs Training Completion Certificate (Online)
-            </h2>
-          </div>
-
-          {/* Main Content */}
-          <div style={{ 
-            textAlign: 'center',
-            fontSize: '18px',
-            margin: '0 auto',
-            maxWidth: '90%'
+      <div 
+        ref={certificateRef}
+        style={{
+          width: '210mm',
+          minHeight: '297mm',
+          padding: '40px 50px',
+          boxSizing: 'border-box',
+          fontFamily: "'Times New Roman', serif",
+          background: '#fff9f9',
+          margin: '0 auto',
+          lineHeight: '1.5',
+          position: 'relative',
+          overflow: 'visible'
+        }}
+      >
+         {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <h1 style={{ 
+            fontSize: '24px',
+            fontWeight: 'bold',
+            marginBottom: '5px',
+            textDecoration: 'underline',
+            color: '#8B0000'
           }}>
-            <p>This is to certify that</p>
-            
-            <div style={{
-              margin: '25px 0',
-              fontSize: '22px',
-              fontWeight: 'bold',
-              textDecoration: 'underline',
-              minHeight: '30px'
-            }}>
-              {studentData.name.toUpperCase()}
-            </div>
+            BALAJI SHIKSHAN SANSTHAN SAMITI
+          </h1>
+          <h2 style={{ 
+            fontSize: '20px',
+            fontWeight: 'bold',
+            marginBottom: '30px'
+          }}>
+            25 Hrs Training Completion Certificate (Online)
+          </h2>
+        </div>
 
-            <p>has successfully completed twenty-five hours training</p>
-            <p>through the online mode by</p>
-            
-            <p style={{ 
-              fontWeight: 'bold', 
-              margin: '15px 0',
-              lineHeight: '1.4'
-            }}>
-              Balaji Shikshan Sansthan Samiti,<br />
-              using the portal www.balajitraining.in
-            </p>
-
-            <p>for Life Insurance from</p>
-
-            <p style={{ 
-              fontWeight: 'bold', 
-              margin: '15px 0',
-              lineHeight: '1.4'
-            }}>
-              {studentData.startDate} to {studentData.endDate}
-            </p>
-
-            <div style={{ 
-              margin: '30px 0',
-              lineHeight: '1.6'
-            }}>
-              <p><strong>Branch:</strong> {studentData.branch}</p>
-              <p><strong>LIC Registration No:</strong> {studentData.licRegdNumber}</p>
-            </div>
-
-            <p style={{ margin: '30px 0 15px' }}>
-              The Candidate is sponsored/forwarded by:
-            </p>
-
-            <p style={{ 
-              fontWeight: 'bold', 
-              fontSize: '20px', 
-              marginBottom: '30px'
-            }}>
-              LIC OF INDIA
-            </p>
-          </div>
-
-          {/* Footer Section */}
+        {/* Main Content */}
+        <div style={{ 
+          textAlign: 'center',
+          fontSize: '18px',
+          margin: '0 auto',
+          maxWidth: '90%'
+        }}>
+          <p>This is to certify that</p>
+          
           <div style={{
-            marginTop: '40px',
-            fontSize: '16px',
-            lineHeight: '1.5'
+            margin: '25px 0',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+            minHeight: '30px'
           }}>
-            <p style={{ marginBottom: '15px' }}>
-              Balaji Shikshan Sansthan Samiti is an Accredited Institute for Life Insurance Agent's
-              Training by Life Insurance Corporation of India by
-            </p>
-            <p style={{ 
-              fontWeight: 'bold', 
-              margin: '10px 0',
-              lineHeight: '1.4'
-            }}>
-              Reference Number CO/MKTG/FFT/PRT.
-            </p>
-            <p style={{ marginBottom: '30px' }}>
-              This Approval is Valid Up to 30 June 2027.
-            </p>
+            {studentData.name?.toUpperCase()}
+          </div>
 
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              flexWrap: 'wrap',
-              marginBottom: '20px'
-            }}>
-              <div style={{ minWidth: '120px' }}>
-                <p><strong>PAN NUMBER:</strong></p>
-                <p style={{ fontWeight: 'bold' }}>{studentData.panNumber}</p>
-              </div>
-              <div style={{ minWidth: '120px' }}>
-                <p><strong>CERTIFICATE REF.:</strong></p>
-                <p style={{ fontWeight: 'bold' }}>BS{studentData.srNo?.toString().padStart(4, '0')}</p>
-              </div>
-              <div style={{ minWidth: '120px' }}>
-                <p><strong>SR. NO.:</strong></p>
-                <p style={{ fontWeight: 'bold' }}>{studentData.srNo}</p>
-              </div>
+          <p>has successfully completed twenty-five hours training</p>
+          <p>through the online mode by</p>
+          
+          <p style={{ 
+            fontWeight: 'bold', 
+            margin: '15px 0',
+            lineHeight: '1.4'
+          }}>
+            Balaji Shikshan Sansthan Samiti,<br />
+            using the portal www.balajitraining.in
+          </p>
+
+          <p>for Life Insurance from</p>
+
+          <p style={{ 
+            fontWeight: 'bold', 
+            margin: '15px 0',
+            lineHeight: '1.4'
+          }}>
+            {studentData.startDate} to {studentData.endDate}
+          </p>
+
+          <div style={{ 
+            margin: '30px 0',
+            lineHeight: '1.6'
+          }}>
+            <p><strong>Branch:</strong> {studentData.branch}</p>
+            <p><strong>LIC Registration No:</strong> {studentData.licRegdNumber}</p>
+          </div>
+
+          <p style={{ margin: '30px 0 15px' }}>
+            The Candidate is sponsored/forwarded by:
+          </p>
+
+          <p style={{ 
+            fontWeight: 'bold', 
+            fontSize: '20px', 
+            marginBottom: '30px'
+          }}>
+            LIC OF INDIA
+          </p>
+        </div>
+
+        {/* Footer Section */}
+        <div style={{
+          marginTop: '40px',
+          fontSize: '16px',
+          lineHeight: '1.5'
+        }}>
+          <p style={{ marginBottom: '15px' }}>
+            Balaji Shikshan Sansthan Samiti is an Accredited Institute for Life Insurance Agent's
+            Training by Life Insurance Corporation of India by
+          </p>
+          <p style={{ 
+            fontWeight: 'bold', 
+            margin: '10px 0',
+            lineHeight: '1.4'
+          }}>
+            Reference Number CO/MKTG/FFT/PRT.
+          </p>
+          <p style={{ marginBottom: '30px' }}>
+            This Approval is Valid Up to 30 June 2027.
+          </p>
+
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            flexWrap: 'wrap',
+            marginBottom: '20px'
+          }}>
+            <div style={{ minWidth: '120px' }}>
+              <p><strong>PAN NUMBER:</strong></p>
+              <p style={{ fontWeight: 'bold' }}>{studentData.panNumber}</p>
             </div>
+            <div style={{ minWidth: '120px' }}>
+              <p><strong>CERTIFICATE REF.:</strong></p>
+              <p style={{ fontWeight: 'bold' }}>BS{studentData.srNo?.toString().padStart(4, '0')}</p>
+            </div>
+            <div style={{ minWidth: '120px' }}>
+              <p><strong>SR. NO.:</strong></p>
+              <p style={{ fontWeight: 'bold' }}>{studentData.srNo}</p>
+            </div>
+          </div>
 
-            {/* Signature Area */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: '60px',
-              alignItems: 'flex-end',
-              flexWrap: 'wrap'
+          {/* Signature Area */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '60px',
+            alignItems: 'flex-end',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ 
+              textAlign: 'center', 
+              marginBottom: '20px',
+              flex: 1,
+              minWidth: '200px'
             }}>
               <div style={{ 
-                textAlign: 'center', 
-                marginBottom: '20px',
-                flex: 1,
-                minWidth: '200px'
+                height: '80px', 
+                marginBottom: '10px',
+                display: 'flex',
+                justifyContent: 'center'
               }}>
-                <div style={{ 
-                  height: '80px', 
-                  marginBottom: '10px',
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>
-                  <img 
-                    src="/signature.png"
-                    alt="Authorized Signature"
-                    style={{ height: '100%', objectFit: 'contain' }}
-                  />
-                </div>
-                <div style={{ 
-                  borderTop: '1px solid #000', 
-                  width: '200px', 
-                  margin: '0 auto' 
-                }}></div>
-                <p style={{ marginTop: '5px' }}>RENHA KOHLI</p>
+                {/* Signature image would go here */}
               </div>
-
               <div style={{ 
-                textAlign: 'center', 
-                marginBottom: '20px',
-                flex: 1,
-                minWidth: '200px'
+                borderTop: '1px solid #000', 
+                width: '200px', 
+                margin: '0 auto' 
+              }}></div>
+              <p style={{ marginTop: '5px' }}>RENHA KOHLI</p>
+            </div>
+
+            <div style={{ 
+              textAlign: 'center', 
+              marginBottom: '20px',
+              flex: 1,
+              minWidth: '200px'
+            }}>
+              <div style={{ 
+                height: '80px', 
+                marginBottom: '10px',
+                display: 'flex',
+                justifyContent: 'center'
               }}>
-                <div style={{ 
-                  height: '80px', 
-                  marginBottom: '10px',
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>
-                  <img 
-                    src="/stamp.png"
-                    alt="Official Stamp"
-                    style={{ 
-                      height: '100%', 
-                      objectFit: 'contain',
-                      maxWidth: '150px'
-                    }}
-                  />
-                </div>
-                <p>Official Stamp</p>
+                {/* Stamp image would go here */}
               </div>
+              <p>Official Stamp</p>
             </div>
+          </div>
 
-            {/* Verification Link */}
-            <div style={{ 
-              marginTop: '40px',
-              textAlign: 'center',
-              fontSize: '14px'
-            }}>
-              <p>You can verify training details at:</p>
-              <p>https://balajitraining.in/verify-certificate/</p>
-            </div>
+          {/* Verification Link */}
+          <div style={{ 
+            marginTop: '40px',
+            textAlign: 'center',
+            fontSize: '14px'
+          }}>
+            <p>You can verify training details at:</p>
+            <p>https://balajitraining.in/verify-certificate/</p>
+          </div>
 
-            {/* Address */}
-            <div style={{ 
-              marginTop: '20px',
-              textAlign: 'center',
-              fontSize: '12px'
-            }}>
-              <p>Regd. Office: 523, MAKSH2001/48 Plaza, 9F Post, Manmanur, Jaipur - 300020 (Raj)</p>
-            </div>
+          {/* Address */}
+          <div style={{ 
+            marginTop: '20px',
+            textAlign: 'center',
+            fontSize: '12px'
+          }}>
+            <p>Regd. Office: 523, MAKSH2001/48 Plaza, 9F Post, Manmanur, Jaipur - 300020 (Raj)</p>
           </div>
         </div>
       </div>
@@ -305,17 +317,22 @@ const CertificateTemplate = ({ studentData }) => {
         </button>
       </div>
 
-      {/* Preview */}
+      {/* Preview - now with proper dimensions */}
       {certificateUrl && (
         <div className="mt-8 w-full">
           <h3 className="text-lg font-medium mb-2 text-center">Certificate Preview</h3>
           <div className="flex justify-center">
-            <div className="border rounded-lg overflow-hidden shadow-md max-w-full">
+            <div className="border rounded-lg overflow-hidden shadow-md" style={{ maxWidth: '100%' }}>
               <img 
                 src={certificateUrl} 
                 alt="Certificate Preview" 
-                className="w-full h-auto max-w-full"
-                style={{ maxHeight: '500px', objectFit: 'contain' }}
+                className="w-full"
+                style={{ 
+                  maxHeight: '80vh',
+                  objectFit: 'contain',
+                  display: 'block',
+                  margin: '0 auto'
+                }}
               />
             </div>
           </div>
