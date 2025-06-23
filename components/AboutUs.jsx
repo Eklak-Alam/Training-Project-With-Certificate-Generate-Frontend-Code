@@ -59,9 +59,7 @@ const AboutUs = () => {
             <img
               src="https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_600/https://balajitraining.in/wp-content/uploads/2025/03/Untitled-design-4.png"
               alt="Insurance professionals training"
-              fill
               className="object-cover"
-              priority
             />
           </motion.div>
         </div>

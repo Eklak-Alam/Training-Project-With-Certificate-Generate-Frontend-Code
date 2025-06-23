@@ -13,6 +13,7 @@ const Page = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     if (!auth.getCurrentUser() || !auth.isAdmin()) {
@@ -22,6 +23,24 @@ const Page = () => {
       return () => clearTimeout(timer);
     }
   }, [auth, router]);
+
+    useEffect(() => {
+    // Client-side only check
+    if (typeof window !== 'undefined') {
+      const checkAuth = () => {
+        setIsLoading(true);
+        const user = auth.getCurrentUser();
+        if (!user || !auth.isAdmin()) {
+          router.push('/login');
+        } else {
+          setUserData(user);
+        }
+        setIsLoading(false);
+      };
+      checkAuth();
+    }
+  }, [auth, router]);
+
 
   const clearMessages = () => {
     setSuccessMessage('');

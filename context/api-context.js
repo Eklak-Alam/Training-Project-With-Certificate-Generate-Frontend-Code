@@ -41,17 +41,26 @@ export const ApiProvider = ({ children }) => {
     },
 
     logout: () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+      return Promise.resolve();
     },
 
     getCurrentUser: () => {
-      const user = localStorage.getItem("user");
-      return user ? JSON.parse(user) : null;
+      if (typeof window !== "undefined") {
+        const user = localStorage.getItem("user");
+        return user ? JSON.parse(user) : null;
+      }
+      return null;
     },
 
     isAuthenticated: () => {
-      return !!localStorage.getItem("token");
+      if (typeof window !== "undefined") {
+        return !!localStorage.getItem("token");
+      }
+      return false;
     },
 
     isAdmin: () => {
