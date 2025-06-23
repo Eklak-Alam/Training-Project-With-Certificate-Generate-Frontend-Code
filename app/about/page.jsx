@@ -90,7 +90,7 @@ const AboutPage = () => {
               className="text-lg text-gray-600 leading-relaxed mb-6"
               variants={fadeIn}
             >
-              Icall Soft established in year 2000 with its existence in I.T. Training, Software development, I.T. Enabled services with vast experience with the pioneer company and clients in India and abroad. Icall soft became Icall Soft Pvt. Ltd. in the year of 2002. Since its foundation it was engaged in imparting training in I.T for corporate clients.
+              Sansthan Samiti Soft established in year 2000 with its existence in I.T. Training, Software development, I.T. Enabled services with vast experience with the pioneer company and clients in India and abroad. Icall soft became Icall Soft Pvt. Ltd. in the year of 2002. Since its foundation it was engaged in imparting training in I.T for corporate clients.
             </motion.p>
           </motion.div>
 
@@ -111,7 +111,7 @@ const AboutPage = () => {
             >
               With the passage of time we identified new opportunities in the field of training, particularly the Pre-license training of insurance agents as per IRDA (Insurance Regulatory & Development Authority) regulations. Understanding the needs of E-learning, our organization entered into e-learning with{' '}
               <a href="https://www.icallinsurance.com" className="text-blue-600 hover:underline">
-                www.icallinsurance.com
+                https://balajitraining.in/
               </a>{' '}
               for insurance agents.
             </motion.p>
@@ -134,7 +134,7 @@ const AboutPage = () => {
             >
               Our e-learning platform{' '}
               <a href="https://www.icallinsurance.com" className="text-blue-600 hover:underline">
-                www.icallinsurance.com
+                https://balajitraining.in/
               </a>{' '}
               enables insurance agents to complete their training without boundaries of time and location. This innovation has allowed us to serve thousands of insurance agents every year for major multinational insurance companies.
             </motion.p>
@@ -148,13 +148,13 @@ const AboutPage = () => {
             transition={{ type: 'spring', stiffness: 300 }}
           >
             <h3 className="text-xl font-bold text-blue-800 mb-4">
-              Visit Our E-Learning Platform
+              Visit Our Training 
             </h3>
             <a
               href="https://www.icallinsurance.com"
               className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
-              www.icallinsurance.com
+              https://balajitraining.in/
             </a>
           </motion.div>
         </motion.div>

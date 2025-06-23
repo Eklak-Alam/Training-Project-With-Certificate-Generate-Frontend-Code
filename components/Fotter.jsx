@@ -21,10 +21,8 @@ const Footer = () => {
   ];
 
   const trainingLinks = [
-    { name: "Courses", url: "#" },
-    { name: "Pricing", url: "#" },
-    { name: "FAQs", url: "#" },
-    { name: "Documentation", url: "#" },
+    { name: "Courses", url: "/courses" },
+    { name: "FAQs", url: "/faqs" },
   ];
 
   const legalLinks = [
@@ -69,9 +67,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Company Info */}
           <motion.div variants={itemVariants}>
-            <h3 className="text-white text-lg font-semibold mb-4">Balaji Shikshan Sansthan Samiti</h3>
+            <h3 className="text-white text-lg font-semibold mb-4">Balaji Insurance Training & Online Solutions</h3>
             <p className="mb-6">
-              Leading provider of Balaji Shikshan Sansthan Samiti approved insurance training programs since 2000
+              We will provide Pre-License Training courses in India, for more information contact with as or submit quary.
             </p>
             <div className="flex flex-wrap gap-3">
               {socialLinks.map((social, index) => (
@@ -147,8 +145,7 @@ const Footer = () => {
               >
                 <Phone className="text-blue-400 mr-3" size={18} />
                 <div>
-                  <p>Mobile: 9989650553</p>
-                  <p>Landline: 040-23418604</p>
+                  <p>Mobile: +91 9352793163</p>
                 </div>
               </motion.div>
               
@@ -158,7 +155,7 @@ const Footer = () => {
               >
                 <Mail className="text-blue-400 mr-3" size={18} />
                 <a href="mailto:info@icallinsurance.com" className="hover:text-white">
-                  info@icallinsurance.com
+                  incharge.balajitraining@gmail.com
                 </a>
               </motion.div>
             </address>
@@ -184,9 +181,9 @@ const Footer = () => {
         >
           <div className="flex items-center">
             <img 
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZXAorzp1eeBQEJSGigi4oFW_R2C93GBsKRA&s" 
+              src="/logo2.webp" 
               alt="LIC Approved Training" 
-              className="h-10 mr-4 object-contain"
+              className="h-16 mr-4 object-contain"
             />
             <a 
               href="https://www.icallinsurance.com" 
@@ -194,7 +191,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300"
             >
-              www.icallinsurance.com
+              https://balajitraining.in/
             </a>
           </div>
 
@@ -211,7 +208,7 @@ const Footer = () => {
               ))}
             </div>
             <p className="text-gray-400">
-              © {new Date().getFullYear()} iCall Soft Pvt Ltd. All rights reserved.
+              © {new Date().getFullYear()} Balaji Insurance Training Soft Pvt Ltd. All rights reserved.
             </p>
           </div>
         </motion.div>

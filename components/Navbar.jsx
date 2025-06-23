@@ -1,9 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Info, HelpCircle, Phone, FileText, LogIn, UserPlus, LogOut, User } from 'lucide-react';
+import { Menu, X, Home, Info, HelpCircle, Phone, FileText, LogIn, UserPlus, LogOut, User, BarChart2 } from 'lucide-react';
 import Link from 'next/link';
 import { useApi } from '@/context/api-context';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ const Navbar = () => {
   const { auth } = useApi();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     setIsLoggedIn(auth.isAuthenticated());
@@ -26,19 +28,42 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await auth.logout();
-    setIsLoggedIn(false);
-    setUserData(null);
-    setIsOpen(false);
+    try {
+      await auth.logout();
+      
+      // Clear local state
+      setIsLoggedIn(false);
+      setUserData(null);
+      setIsOpen(false);
+      
+      // Redirect to login page
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Handle error if needed
+    }
+  };
+
+  const getDashboardPath = () => {
+    if (!isLoggedIn) return '/login';
+    return userData?.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard';
   };
 
   const navLinks = [
     { name: 'Home', path: '/', icon: <Home size={20} /> },
+    { name: 'Courses', path: '/courses', icon: <FileText size={20} /> },
     { name: 'About', path: '/about', icon: <Info size={20} /> },
     { name: 'Help', path: '/help', icon: <HelpCircle size={20} /> },
     { name: 'FAQs', path: '/faqs', icon: <FileText size={20} /> },
     { name: 'Contact', path: '/contact', icon: <Phone size={20} /> },
     { name: 'LIC', path: '/lic', icon: <FileText size={20} /> },
+    ...(isLoggedIn ? [
+      { 
+        name: 'Dashboard', 
+        path: getDashboardPath(), 
+        icon: <BarChart2 size={20} /> 
+      }
+    ] : [])
   ];
 
   const menuVariants = {
@@ -271,6 +296,19 @@ const Navbar = () => {
                             <User className="h-4 w-4 text-blue-600" />
                           </div>
                           <span className="font-medium">{userData?.username}</span>
+                        </motion.div>
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Link
+                            href={getDashboardPath()}
+                            className="flex items-center justify-center gap-2 w-full py-3 px-4 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <BarChart2 size={20} />
+                            Dashboard
+                          </Link>
                         </motion.div>
                         <motion.button
                           whileHover={{ scale: 1.02 }}

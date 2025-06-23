@@ -126,7 +126,7 @@ const ContactPage = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-800 mb-1">Address</h3>
                   <p className="text-gray-600">
-                    Icall Soft Pvt Ltd<br />
+                    Balaji Shikshan Sansthan Samiti<br />
                     102/B, 1st Floor, Lake Shore Towers,<br />
                     Rajbhavan Road,<br />
                     Somajiguda, Hyderabad - 500082
@@ -144,8 +144,7 @@ const ContactPage = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-800 mb-1">Phone</h3>
                   <p className="text-gray-600">
-                    Mobile: 9989650553<br />
-                    Landline: 040-23418604
+                    Mobile: +91 9352793163
                   </p>
                 </div>
               </motion.div>
@@ -160,7 +159,7 @@ const ContactPage = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-800 mb-1">Email</h3>
                   <a href="mailto:info@icallinsurance.com" className="text-blue-600 hover:underline">
-                    info@icallinsurance.com
+                    incharge.balajitraining@gmail.com
                   </a>
                 </div>
               </motion.div>

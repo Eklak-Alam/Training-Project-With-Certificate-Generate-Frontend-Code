@@ -6,6 +6,7 @@ import Head from 'next/head';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Lock, User as UserIcon, AlertCircle, Loader2 } from 'lucide-react';
 
+
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     username: '',
@@ -25,11 +26,17 @@ export default function LoginPage() {
 
   const redirectBasedOnRole = () => {
     const user = auth.getCurrentUser();
-    if (user?.role === 'ADMIN') {
-      router.push('/admin/dashboard');
-    } else {
-      router.push('/dashboard');
-    }
+    const targetPath = user?.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard';
+    
+    // Option 1: Hard redirect (full page reload - recommended)
+    window.location.href = targetPath;
+
+    // Option 2: Next.js router with forced reload
+    // router.push(targetPath).then(() => window.location.reload());
+    
+    // Option 3: Next.js 13+ App Router approach
+    // router.push(targetPath);
+    // router.refresh(); // Re-fetches data and re-renders page
   };
 
   const handleChange = (e) => {

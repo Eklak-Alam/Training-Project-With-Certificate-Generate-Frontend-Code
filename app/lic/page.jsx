@@ -337,8 +337,8 @@ const LICVerificationPage = () => {
             className="mt-1"
             whileHover={{ scale: 1.02 }}
           >
-            <Mail className="inline mr-1" size={14} /> support@icallinsurance.com | 
-            <Phone className="inline mx-1" size={14} /> 9989650553
+            <Mail className="inline mr-1" size={14} /> incharge.balajitraining@gmail.com | 
+            <Phone className="inline mx-1" size={14} /> +91 9352793163
           </motion.p>
         </motion.div>
       </div>

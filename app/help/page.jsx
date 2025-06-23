@@ -44,7 +44,7 @@ const HelpPage = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Online Training Help Center</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">Balaji Shikshan Sansthan Samiti Training Help Center</h1>
           <div className="w-24 h-1.5 bg-blue-600 mx-auto mb-6"></div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Welcome to the PRE-licensing course training platform. Here's everything you need to succeed.
@@ -62,10 +62,10 @@ const HelpPage = () => {
           <motion.section variants={itemVariants} className="mb-16">
             <div className="bg-blue-50 p-6 rounded-lg">
               <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                This study course is designed to assist individuals interested in the insurance profession in obtaining thorough knowledge of IRDA laws and rules, and an accurate understanding of insurance theory and practice in the area of Life and General insurance.
+                This study course is designed to assist individuals interested in the insurance profession in obtaining thorough knowledge of Balaji Shikshan Sansthan Samiti laws and rules, and an accurate understanding of insurance theory and practice in the area of Life and General insurance.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Icall Soft Pvt. Ltd. is committed to aiding IRDA in achieving these goals by working with individuals seeking training and education on insurance topics to achieve their personal objectives and to build a firm foundation of knowledge.
+                Balaji Shikshan Sansthan Samiti is committed to aiding Balaji Shikshan Sansthan Samiti in achieving these goals by working with individuals seeking training and education on insurance topics to achieve their personal objectives and to build a firm foundation of knowledge.
               </p>
             </div>
           </motion.section>
@@ -121,7 +121,7 @@ const HelpPage = () => {
               <ul className="space-y-2">
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2">•</span>
-                  <span>IRDA syllabus-based content</span>
+                  <span>Balaji Shikshan Sansthan Samiti syllabus-based content</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2">•</span>
