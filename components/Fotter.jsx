@@ -69,9 +69,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Company Info */}
           <motion.div variants={itemVariants}>
-            <h3 className="text-white text-lg font-semibold mb-4">iCall Soft</h3>
+            <h3 className="text-white text-lg font-semibold mb-4">Balaji Shikshan Sansthan Samiti</h3>
             <p className="mb-6">
-              Leading provider of IRDA approved insurance training programs since 2000
+              Leading provider of Balaji Shikshan Sansthan Samiti approved insurance training programs since 2000
             </p>
             <div className="flex flex-wrap gap-3">
               {socialLinks.map((social, index) => (

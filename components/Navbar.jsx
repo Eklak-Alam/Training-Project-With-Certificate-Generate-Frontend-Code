@@ -1,12 +1,21 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Info, HelpCircle, Phone, FileText } from 'lucide-react';
+import { Menu, X, Home, Info, HelpCircle, Phone, FileText, LogIn, UserPlus, LogOut, User } from 'lucide-react';
 import Link from 'next/link';
+import { useApi } from '@/context/api-context';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { auth } = useApi();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    setIsLoggedIn(auth.isAuthenticated());
+    setUserData(auth.getCurrentUser());
+  }, [auth]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +24,13 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    await auth.logout();
+    setIsLoggedIn(false);
+    setUserData(null);
+    setIsOpen(false);
+  };
 
   const navLinks = [
     { name: 'Home', path: '/', icon: <Home size={20} /> },
@@ -79,7 +95,7 @@ const Navbar = () => {
               className="flex items-center"
             >
               <Link href="/" className="text-2xl lg:text-4xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
-                LIC
+                <img className='h-14' src="/logo2.webp" alt="" />
               </Link>
             </motion.div>
 
@@ -102,6 +118,60 @@ const Navbar = () => {
                   </motion.div>
                 ))}
               </nav>
+
+              {/* Auth Buttons - Desktop */}
+              <div className="hidden md:flex items-center gap-4">
+                {isLoggedIn ? (
+                  <>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                        <User className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-sm font-medium">{userData?.username}</span>
+                    </motion.div>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      <LogOut size={18} />
+                      Logout
+                    </motion.button>
+                  </>
+                ) : (
+                  <>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Link
+                        href="/login"
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                      >
+                        <LogIn size={18} />
+                        Login
+                      </Link>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Link
+                        href="/register"
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <UserPlus size={18} />
+                        Register
+                      </Link>
+                    </motion.div>
+                  </>
+                )}
+              </div>
 
               {/* Mobile Menu Button */}
               <motion.button
@@ -181,6 +251,68 @@ const Navbar = () => {
                       </Link>
                     </motion.div>
                   ))}
+
+                  {/* Auth Buttons - Mobile */}
+                  <motion.div
+                    variants={linkVariants}
+                    initial="hidden"
+                    animate="visible"
+                    custom={navLinks.length}
+                    className="flex flex-col gap-4 pt-4"
+                  >
+                    {isLoggedIn ? (
+                      <>
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-100"
+                        >
+                          <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                            <User className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <span className="font-medium">{userData?.username}</span>
+                        </motion.div>
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={handleLogout}
+                          className="flex items-center justify-center gap-2 w-full py-3 px-4 text-lg font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          <LogOut size={20} />
+                          Logout
+                        </motion.button>
+                      </>
+                    ) : (
+                      <>
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Link
+                            href="/login"
+                            className="flex items-center justify-center gap-2 w-full py-3 px-4 text-lg font-medium text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <LogIn size={20} />
+                            Login
+                          </Link>
+                        </motion.div>
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Link
+                            href="/register"
+                            className="flex items-center justify-center gap-2 w-full py-3 px-4 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <UserPlus size={20} />
+                            Register
+                          </Link>
+                        </motion.div>
+                      </>
+                    )}
+                  </motion.div>
                 </motion.div>
               </div>
             </motion.div>

@@ -1,14 +1,15 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import JSZip from 'jszip';
-import { Loader2, Download, AlertCircle, Check, X } from 'lucide-react';
-import { useApi } from '@/context/api-context';
+import { Loader2, Download, AlertCircle, Check, X, RefreshCw } from 'lucide-react';
 import CertificateTemplate from './CertificateTemplate';
+import { useApi } from '@/context/api-context';
 
 const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
-  const { getAllStudents } = useApi();
+  const { student } = useApi(); // Destructure student from useApi
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
@@ -17,15 +18,21 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
   const cancelRef = useRef(false);
 
   const fetchStudents = async () => {
-    setIsLoading(true);
+    setIsFetching(true);
     setError('');
     try {
-      const data = await getAllStudents();
-      setStudents(data);
+      const data = await student.getAll(); // Use student.getAll()
+      if (data && Array.isArray(data)) {
+        setStudents(data);
+      } else {
+        throw new Error('Invalid data format received');
+      }
     } catch (err) {
+      console.error('Fetch students error:', err);
       setError(err.message || 'Failed to fetch students');
+      setStudents([]);
     } finally {
-      setIsLoading(false);
+      setIsFetching(false);
     }
   };
 
@@ -68,6 +75,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       const { createRoot } = await import('react-dom/client');
       const root = createRoot(container);
 
+      // Wait for fonts to load
       await document.fonts.ready;
 
       for (let i = 0; i < totalStudents; i++) {
@@ -90,7 +98,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
               throw new Error('Certificate element not rendered');
             }
 
-            // Generate PNG - ONLY for ZIP, no individual downloads
+            // Generate PNG
             const { toPng } = await import('html-to-image');
             const dataUrl = await toPng(certificateElement, {
               quality: 1,
@@ -165,17 +173,26 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
     <div className="space-y-6">
       {/* Student Count */}
       <div className="bg-blue-50 p-4 rounded-lg">
-        <h2 className="font-medium text-blue-800">Students Found</h2>
-        <p className="text-2xl font-bold text-blue-900 mt-1">
-          {students.length} {students.length === 1 ? 'student' : 'students'}
-        </p>
-        <button
-          onClick={fetchStudents}
-          disabled={isLoading}
-          className="mt-2 text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50"
-        >
-          Refresh List
-        </button>
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="font-medium text-blue-800">Students Found</h2>
+            <p className="text-2xl font-bold text-blue-900 mt-1">
+              {students.length} {students.length === 1 ? 'student' : 'students'}
+            </p>
+          </div>
+          <button
+            onClick={fetchStudents}
+            disabled={isFetching}
+            className="flex items-center text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50"
+          >
+            {isFetching ? (
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="mr-1 h-4 w-4" />
+            )}
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Progress Display */}
@@ -247,7 +264,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
         </div>
       )}
 
-      {/* Certificate Preview - Static preview only */}
+      {/* Certificate Preview */}
       <div className="mt-8 border-t pt-6">
         <h3 className="text-lg font-medium mb-4 text-center">Certificate Preview</h3>
         <div className="flex justify-center">
@@ -261,7 +278,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
               startDate: "01-01-2023",
               endDate: "05-01-2023"
             }} 
-            isPreview={true} // Add this prop to prevent auto-download in CertificateTemplate
+            isPreview={true}
           />
         </div>
       </div>

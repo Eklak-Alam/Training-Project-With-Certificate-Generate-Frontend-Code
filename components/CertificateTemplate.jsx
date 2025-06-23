@@ -90,13 +90,12 @@ const CertificateTemplate = ({ studentData }) => {
           padding: '15px 25px',
           boxSizing: 'border-box',
           fontFamily: "'Times New Roman', serif",
-          background: '#f5e8d5',
+          background: 'white',
           margin: '0 auto',
           lineHeight: '1.3',
           position: 'relative',
           overflow: 'hidden',
           border: '15px solid #d4a76a',
-          backgroundImage: 'linear-gradient(to bottom, #f5e8d5, #f0e0c8)',
           display: 'flex',
           flexDirection: 'column'
         }}
@@ -344,7 +343,7 @@ const CertificateTemplate = ({ studentData }) => {
         <button
           onClick={generateCertificate}
           disabled={isGenerating}
-          className="flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium disabled:opacity-50"
+          className="flex cursor-pointer items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium disabled:opacity-50"
         >
           {isGenerating ? (
             <>
