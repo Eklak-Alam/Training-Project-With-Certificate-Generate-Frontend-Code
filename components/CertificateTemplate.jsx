@@ -41,10 +41,11 @@ const CertificateTemplate = ({ studentData }) => {
       const dataUrl = await toPng(clonedNode, {
         quality: 1,
         pixelRatio: 3,
-        backgroundColor: '#f5e8d5',
+        backgroundColor: '#ffffff',
         style: {
           width: '210mm',
-          height: '297mm'
+          height: '297mm',
+          backgroundColor: '#ffffff', // ✅ again, enforced in style
         }
       });
 

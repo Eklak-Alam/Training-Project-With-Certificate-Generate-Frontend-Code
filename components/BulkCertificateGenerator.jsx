@@ -69,7 +69,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       container.style.left = '-9999px';
       container.style.top = '0';
       container.style.width = '210mm';
-      container.style.height = '297mm';
+      container.style.height = '267mm';
       document.body.appendChild(container);
 
       const { createRoot } = await import('react-dom/client');
