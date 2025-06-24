@@ -6,7 +6,7 @@ import CertificateTemplate from './CertificateTemplate';
 import { useApi } from '@/context/api-context';
 
 const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
-  const { student } = useApi(); // Destructure student from useApi
+  const { student } = useApi();
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -21,7 +21,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
     setIsFetching(true);
     setError('');
     try {
-      const data = await student.getAll(); // Use student.getAll()
+      const data = await student.getAll();
       if (data && Array.isArray(data)) {
         setStudents(data);
       } else {
@@ -65,11 +65,10 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
 
       // Create a temporary container for rendering
       const container = document.createElement('div');
-      container.style.position = 'fixed';
+      container.style.position = 'absolute';
       container.style.left = '-9999px';
-      container.style.top = '0';
-      container.style.width = '210mm';
-      container.style.height = '267mm';
+      container.style.width = '794px'; // A4 width in pixels at 72dpi
+      container.style.height = '1123px'; // A4 height in pixels at 72dpi
       document.body.appendChild(container);
 
       const { createRoot } = await import('react-dom/client');
@@ -90,7 +89,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
             root.render(<CertificateTemplate studentData={student} />);
             
             // Wait for rendering to complete
-            await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 100));
 
             // Get the rendered element
             const certificateElement = container.firstChild;
@@ -98,16 +97,20 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
               throw new Error('Certificate element not rendered');
             }
 
-            // Generate PNG
+            // Generate PNG with reduced quality
             const { toPng } = await import('html-to-image');
             const dataUrl = await toPng(certificateElement, {
-              quality: 1,
-              pixelRatio: 2,
-              backgroundColor: '#f5e8d5',
-              cacheBust: true
+              quality: 0.8, // Reduced quality for smaller file size
+              pixelRatio: 1, // Reduced from 2 to 1
+              backgroundColor: 'white',
+              cacheBust: true,
+              filter: (node) => {
+                // Exclude any buttons from rendering
+                return !(node instanceof HTMLButtonElement);
+              }
             });
 
-            // Add to ZIP only
+            // Add to ZIP
             certificateFolder.file(
               `Balaji_Certificate_${student.panNumber}.png`,
               dataUrl.split(',')[1],
@@ -131,7 +134,11 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       if (!cancelRef.current && generatedCount > 0) {
         // Generate ZIP file blob
         setStatus('Creating ZIP file...');
-        const content = await zip.generateAsync({ type: 'blob' });
+        const content = await zip.generateAsync({ 
+          type: 'blob',
+          compression: 'DEFLATE',
+          compressionOptions: { level: 6 } // Medium compression
+        });
         setZipBlob(content);
         
         setSuccess(`Successfully generated ${generatedCount} certificates. Ready to download.`);
@@ -164,7 +171,6 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
   useEffect(() => {
     fetchStudents();
     return () => {
-      // Cleanup on unmount
       cancelRef.current = true;
     };
   }, []);
@@ -264,22 +270,24 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
         </div>
       )}
 
-      {/* Certificate Preview */}
+      {/* Static Certificate Preview */}
       <div className="mt-8 border-t pt-6">
-        <h3 className="text-lg font-medium mb-4 text-center">Certificate Preview</h3>
+        <h3 className="text-lg font-medium mb-4 text-center">Certificate Design Preview</h3>
         <div className="flex justify-center">
-          <CertificateTemplate 
-            studentData={{
-              name: "Sample Student",
-              panNumber: "ABCDE1234F",
-              licRegdNumber: "LIC123456",
-              branch: "Sample Branch",
-              srNo: 1,
-              startDate: "01-01-2023",
-              endDate: "05-01-2023"
-            }} 
-            isPreview={true}
-          />
+          <div className="border p-2 bg-white shadow-sm">
+            <CertificateTemplate 
+              studentData={{
+                name: "Sample Student",
+                panNumber: "ABCDE1234F",
+                licRegdNumber: "LIC123456",
+                branch: "Sample Branch",
+                srNo: 1,
+                startDate: "01-01-2023",
+                endDate: "05-01-2023"
+              }} 
+              isPreview={true}
+            />
+          </div>
         </div>
       </div>
     </div>
