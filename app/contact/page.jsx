@@ -127,9 +127,7 @@ const ContactPage = () => {
                   <h3 className="text-lg font-medium text-gray-800 mb-1">Address</h3>
                   <p className="text-gray-600">
                     Balaji Shikshan Sansthan Samiti<br />
-                    102/B, 1st Floor, Lake Shore Towers,<br />
-                    Rajbhavan Road,<br />
-                    Somajiguda, Hyderabad - 500082
+                    523 mansarovar Jaipur rajasthan 302020
                   </p>
                 </div>
               </motion.div>

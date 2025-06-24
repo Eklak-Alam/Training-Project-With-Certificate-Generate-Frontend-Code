@@ -121,7 +121,7 @@ export default function Home() {
                 <div className="flex items-start">
                   <FaCheckCircle className="text-green-500 mt-1 mr-3 flex-shrink-0" />
                   <p className="text-gray-700">
-                    Mandatory 25-hour and 15-hour training programs
+                    Mandatory 25-hour training programs
                   </p>
                 </div>
                 <div className="flex items-start">
@@ -202,7 +202,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-3">Renewal Training</h3>
               <p className="text-gray-600 mb-4">
-                15-hour renewal program for existing insurance professionals
+                25-hour renewal program for existing insurance professionals
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">

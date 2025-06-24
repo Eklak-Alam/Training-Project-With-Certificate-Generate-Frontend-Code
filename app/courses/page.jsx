@@ -34,7 +34,7 @@ const CoursesPage = () => {
       category: "health"
     },
     {
-      title: "POSP Training (15 hrs)",
+      title: "POSP Training 25 hrs)",
       description: "Provides basic knowledge of Life, General and Health insurance to work as an insurance sales person.",
       icon: <FaClock className="text-purple-600 text-2xl" />,
       type: "posp",

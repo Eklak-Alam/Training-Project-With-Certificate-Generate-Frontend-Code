@@ -133,9 +133,7 @@ const Footer = () => {
               >
                 <MapPin className="text-blue-400 mt-1 mr-3" size={18} />
                 <div>
-                  <p>102/B, 1st Floor, Lake Shore Towers</p>
-                  <p>Rajbhavan Road, Somajiguda</p>
-                  <p>Hyderabad - 500082</p>
+                  <p>523 mansarovar Jaipur rajasthan 302020</p>
                 </div>
               </motion.div>
               

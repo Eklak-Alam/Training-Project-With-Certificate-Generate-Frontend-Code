@@ -151,7 +151,7 @@ const AboutPage = () => {
               Visit Our Training 
             </h3>
             <a
-              href="https://www.icallinsurance.com"
+              href="https://balajitraining.in/"
               className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               https://balajitraining.in/

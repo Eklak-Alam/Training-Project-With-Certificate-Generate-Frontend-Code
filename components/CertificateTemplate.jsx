@@ -12,51 +12,85 @@ const CertificateTemplate = ({ studentData }) => {
   //   }
   // }, [studentData]);
 
+
+  // Helper function to convert PNG to JPEG
+const convertToJpeg = async (dataUrl, quality = 0.7) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = dataUrl;
+  });
+};
+
+
   const generateCertificate = async () => {
-    if (!certificateRef.current) return;
+  if (!certificateRef.current) return;
 
-    setIsGenerating(true);
-    try {
-      const tempContainer = document.createElement('div');
-      tempContainer.style.position = 'absolute';
-      tempContainer.style.left = '-9999px';
-      tempContainer.style.width = '210mm';
-      tempContainer.style.height = '297mm';
-      document.body.appendChild(tempContainer);
+  setIsGenerating(true);
+  try {
+    // Create temporary container
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.width = '210mm';
+    tempContainer.style.height = '297mm';
+    document.body.appendChild(tempContainer);
 
-      const clonedNode = certificateRef.current.cloneNode(true);
-      tempContainer.appendChild(clonedNode);
+    // Clone the certificate node
+    const clonedNode = certificateRef.current.cloneNode(true);
+    tempContainer.appendChild(clonedNode);
 
-      await Promise.all([
-        loadImage('/logo.png'),
-        loadImage('/stamp.png'),
-        loadImage('/sign.png'),
-        document.fonts.ready
-      ]);
+    // Wait for assets to load
+    await Promise.all([
+      loadImage('/logo.png'),
+      loadImage('/stamp.png'),
+      loadImage('/sign.png'),
+      document.fonts.ready
+    ]);
 
-      clonedNode.offsetHeight;
-      await new Promise(resolve => setTimeout(resolve, 500));
+    // Force layout calculation
+    clonedNode.offsetHeight;
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-      const { toPng } = await import('html-to-image');
-      const dataUrl = await toPng(clonedNode, {
-        quality: 1,
-        pixelRatio: 3,
+    const { toPng } = await import('html-to-image');
+    const dataUrl = await toPng(clonedNode, {
+      quality: 0.5, // Reduced from 1.0 to 0.8 (20% size reduction)
+      pixelRatio: 1, // Reduced from 3 to 2 (33% size reduction)
+      backgroundColor: '#ffffff',
+      cacheBust: true,
+      style: {
+        width: '210mm',
+        height: '297mm',
         backgroundColor: '#ffffff',
-        style: {
-          width: '210mm',
-          height: '297mm',
-          backgroundColor: '#ffffff', // ✅ again, enforced in style
-        }
-      });
+      },
+      filter: (node) => {
+        // Exclude any hidden elements
+        return node.style?.display !== 'none';
+      }
+    });
 
-      downloadCertificate(dataUrl);
-      document.body.removeChild(tempContainer);
-    } catch (error) {
-      console.error('Error generating certificate:', error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+    // Additional optimization - convert to JPEG if possible
+    const optimizedDataUrl = await convertToJpeg(dataUrl, 0.7);
+    
+    downloadCertificate(optimizedDataUrl);
+    document.body.removeChild(tempContainer);
+  } catch (error) {
+    console.error('Error generating certificate:', error);
+  } finally {
+    setIsGenerating(false);
+  }
+};
+
+
 
   const loadImage = (src) => {
     return new Promise((resolve, reject) => {
