@@ -1,5 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { FaUserTie, FaClock, FaCertificate, FaArrowRight } from 'react-icons/fa'
 
 
@@ -130,12 +131,12 @@ const CoursesPage = () => {
               Our expert-led training programs will prepare you for success in the insurance industry.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center">
+              <Link href='/contact' className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center">
                 Contact Advisor <FaArrowRight className="ml-2" />
-              </button>
-              <button className="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
-                Download Brochure
-              </button>
+              </Link>
+              <Link href='/lic' className="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
+                Download Certificate
+              </Link>
             </div>
           </div>
         </motion.div>

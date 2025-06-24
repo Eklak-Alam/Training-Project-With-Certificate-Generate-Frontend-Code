@@ -1,9 +1,11 @@
 'use client'
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Send, Check } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, Check, User, Crown, Award, BookOpen, GraduationCap } from 'lucide-react';
 import { useState } from 'react';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const ContactPage = () => {
+  // Form state and handlers
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
@@ -17,7 +19,6 @@ const ContactPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -45,11 +46,9 @@ const ContactPage = () => {
     }
 
     setIsSubmitting(true);
-    // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
-      // Reset form after submission
       setTimeout(() => {
         setFormData({
           name: '',
@@ -62,6 +61,49 @@ const ContactPage = () => {
     }, 1500);
   };
 
+  // Team data
+  const teamMembers = [
+    {
+      name: "Rai Singh Verma",
+      position: "Chairman",
+      company: "Balaji Group",
+      icon: <Crown className="text-yellow-500" size={20} />,
+      contacts: []
+    },
+    {
+      name: "Rekha Kohli",
+      position: "Incharge",
+      contacts: [
+        { type: "phone", value: "9352793163", icon: <Phone className="text-blue-500" size={16} /> },
+        { type: "whatsapp", value: "9352793163", icon: <FaWhatsapp className="text-green-500" size={16} /> },
+        { type: "email", value: "incharge.balajitraining@gmail.com", icon: <Mail className="text-red-500" size={16} /> }
+      ]
+    },
+    {
+      name: "Suresh Mandiya",
+      position: "Project Manager/Coordinator",
+      contacts: [
+        { type: "phone", value: "9928552283", icon: <Phone className="text-blue-500" size={16} /> },
+        { type: "whatsapp", value: "9928552283", icon: <FaWhatsapp className="text-green-500" size={16} /> }
+      ]
+    },
+    {
+      name: "Yashwant Kumar Gupta",
+      position: "Faculty (Full Time)",
+      qualification: "ASSOCIATE (III)",
+      icon: <GraduationCap className="text-purple-500" size={20} />,
+      contacts: []
+    },
+    {
+      name: "Mamraj Choudhary",
+      position: "Faculty (Full Time)",
+      qualification: "LICENTIATE (III)",
+      icon: <BookOpen className="text-green-600" size={20} />,
+      contacts: []
+    }
+  ];
+
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -83,12 +125,17 @@ const ContactPage = () => {
         stiffness: 100,
         damping: 10
       }
+    },
+    hover: {
+      y: -5,
+      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12 pt-28">
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,13 +149,14 @@ const ContactPage = () => {
           </p>
         </motion.div>
 
+        {/* Contact Info and Form Section */}
         <motion.div
           initial="hidden"
           animate="visible"
           variants={containerVariants}
           className="flex flex-col lg:flex-row gap-12 max-w-6xl mx-auto"
         >
-          {/* Contact Info */}
+          {/* Contact Info Card */}
           <motion.div
             variants={itemVariants}
             className="lg:w-1/2 bg-white p-8 rounded-lg shadow-sm border border-gray-200"
@@ -144,6 +192,9 @@ const ContactPage = () => {
                   <p className="text-gray-600">
                     Mobile: +91 9352793163
                   </p>
+                  <p className="text-gray-600">
+                    WhatsApp: +91 9928552283
+                  </p>
                 </div>
               </motion.div>
 
@@ -156,7 +207,7 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-gray-800 mb-1">Email</h3>
-                  <a href="mailto:info@icallinsurance.com" className="text-blue-600 hover:underline">
+                  <a href="mailto:incharge.balajitraining@gmail.com" className="text-blue-600 hover:underline">
                     incharge.balajitraining@gmail.com
                   </a>
                 </div>
@@ -164,7 +215,7 @@ const ContactPage = () => {
             </div>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Contact Form Card */}
           <motion.div
             variants={itemVariants}
             className="lg:w-1/2 bg-white p-8 rounded-lg shadow-sm border border-gray-200"
@@ -262,6 +313,97 @@ const ContactPage = () => {
             </form>
           </motion.div>
         </motion.div>
+
+        {/* Team Section */}
+        <motion.section 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+          className="mt-20"
+        >
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-800 mb-3">Our Team</h2>
+            <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+              Meet the dedicated professionals who make Balaji Shikshan Sansthan exceptional
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover="hover"
+                className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100"
+              >
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="p-3 bg-blue-50 rounded-full mr-4">
+                      {member.icon || <User className="text-blue-500" size={20} />}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-800">{member.name}</h3>
+                      <p className="text-blue-600 font-medium">{member.position}</p>
+                      {member.qualification && (
+                        <p className="text-sm text-gray-500 mt-1">{member.qualification}</p>
+                      )}
+                      {member.company && (
+                        <p className="text-sm text-gray-700 mt-1">{member.company}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {member.contacts.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <h4 className="text-sm font-medium text-gray-500 mb-3">CONTACT</h4>
+                      <div className="space-y-3">
+                        {member.contacts.map((contact, i) => (
+                          <div key={i} className="flex items-center">
+                            <span className="mr-2">{contact.icon}</span>
+                            <span className="text-gray-700">
+                              {contact.type === 'whatsapp' ? (
+                                <a 
+                                  href={`https://wa.me/91${contact.value}`} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="hover:text-green-600 hover:underline"
+                                >
+                                  {contact.value}
+                                </a>
+                              ) : contact.type === 'email' ? (
+                                <a 
+                                  href={`mailto:${contact.value}`}
+                                  className="hover:text-red-600 hover:underline"
+                                >
+                                  {contact.value}
+                                </a>
+                              ) : (
+                                <a 
+                                  href={`tel:${contact.value}`}
+                                  className="hover:text-blue-600 hover:underline"
+                                >
+                                  {contact.value}
+                                </a>
+                              )}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
       </div>
     </div>
   );
