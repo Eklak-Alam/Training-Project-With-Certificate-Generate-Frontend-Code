@@ -92,7 +92,7 @@ const Page = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden pt-20"
+        className="max-w-8xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden pt-14"
       >
         {/* Enhanced Header */}
         <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
@@ -120,6 +120,7 @@ const Page = () => {
                 try {
                   await auth.logout();
                   router.push("/login");
+                  window.location.reload(); // Reloads the new /login page
                 } catch (error) {
                   console.error("Logout failed:", error);
                 }

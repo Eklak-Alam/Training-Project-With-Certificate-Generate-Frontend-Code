@@ -59,6 +59,7 @@ export default function Dashboard() {
   const handleLogout = () => {
     auth.logout();
     router.push('/login');
+    window.location.reload(); // Reloads the new /login page
   };
 
   if (isLoading || !userData) {

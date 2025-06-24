@@ -64,13 +64,15 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       let generatedCount = 0;
 
       // Create a temporary container for rendering
-      const container = document.createElement('div');
+     const container = document.createElement('div');
       container.style.position = 'absolute';
       container.style.left = '-9999px';
-      container.style.width = '794px'; // A4 width in pixels at 72dpi
-      container.style.height = '1123px'; // A4 height in pixels at 72dpi
+      container.style.width = '794px'; // A4 width in pixels
+      container.style.height = 'auto'; // Let content determine height
+      container.style.overflow = 'hidden';
+      container.style.padding = '0';
+      container.style.margin = '0';
       document.body.appendChild(container);
-
       const { createRoot } = await import('react-dom/client');
       const root = createRoot(container);
 
@@ -97,15 +99,18 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
               throw new Error('Certificate element not rendered');
             }
 
+            // Set explicit height after rendering to match content
+            certificateElement.style.height = '297mm';
+            certificateElement.style.overflow = 'hidden';
+
             // Generate PNG with reduced quality
             const { toPng } = await import('html-to-image');
             const dataUrl = await toPng(certificateElement, {
-              quality: 0.8, // Reduced quality for smaller file size
-              pixelRatio: 1, // Reduced from 2 to 1
+              quality: 0.5,
+              pixelRatio: 1,
               backgroundColor: 'white',
               cacheBust: true,
               filter: (node) => {
-                // Exclude any buttons from rendering
                 return !(node instanceof HTMLButtonElement);
               }
             });
@@ -132,12 +137,11 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       document.body.removeChild(container);
 
       if (!cancelRef.current && generatedCount > 0) {
-        // Generate ZIP file blob
         setStatus('Creating ZIP file...');
         const content = await zip.generateAsync({ 
           type: 'blob',
           compression: 'DEFLATE',
-          compressionOptions: { level: 6 } // Medium compression
+          compressionOptions: { level: 6 }
         });
         setZipBlob(content);
         
@@ -270,11 +274,11 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
         </div>
       )}
 
-      {/* Static Certificate Preview */}
+      {/* Static Certificate Preview - Made more compact */}
       <div className="mt-8 border-t pt-6">
         <h3 className="text-lg font-medium mb-4 text-center">Certificate Design Preview</h3>
         <div className="flex justify-center">
-          <div className="border p-2 bg-white shadow-sm">
+          <div className="bg-white shadow-sm" style={{ maxWidth: '794px', overflow: 'hidden' }}>
             <CertificateTemplate 
               studentData={{
                 name: "Sample Student",

@@ -106,7 +106,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
 
   const downloadCertificate = (data) => {
     const link = document.createElement('a');
-    link.download = `Balaji_Certificate_${studentData.panNumber}.png`;
+    link.download = `Balaji_Certificate_${studentData.name}.png`;
     link.href = data;
     document.body.appendChild(link);
     link.click();
@@ -366,8 +366,8 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
             paddingBottom: '40px'
           }}>
             <p><strong>Verify at:</strong> https://balajitraining.in/verify-certificate/</p>
-            <p style={{ marginTop: '4px' }}><strong>Regd. Office:</strong> 523, MANSAROWAR PLAZA, 5th Floor, Mansarowar Jaipur—302020 (Raj)</p>
-            <p><strong>Mob:</strong> 9352793163 <strong>URL:</strong> www.balajitraining.in</p>
+            <p style={{ marginTop: '4px' }}><strong>Regd. Office:</strong>523, MANSAROVAR, Jaipur Rajasthan-302020</p>
+            <p><strong>Mob:</strong> +91 9352793163 <strong>URL:</strong> www.balajitraining.in</p>
             <p><strong>Email:</strong> incharge.balajitraining@gmail.com</p>
           </div>
         </div>
