@@ -71,7 +71,7 @@ const AboutPage = () => {
               className="text-lg text-gray-600 leading-relaxed mb-6"
               variants={fadeIn}
             >
-              Icall Soft is a leading solution provider for Internet based applications. The Company has been promoted by some highly experienced Professionals dedicated to provide total IT solutions under one roof. It possesses not only the latest technology gadgets but also the most knowledgeable and experienced hands to offer most user friendly customized solutions.
+              Balaji Shikshan Sansthan Samiti Soft is a leading solution provider for Internet based applications. The Company has been promoted by some highly experienced Professionals dedicated to provide total IT solutions under one roof. It possesses not only the latest technology gadgets but also the most knowledgeable and experienced hands to offer most user friendly customized solutions.
             </motion.p>
           </motion.div>
 
@@ -90,7 +90,7 @@ const AboutPage = () => {
               className="text-lg text-gray-600 leading-relaxed mb-6"
               variants={fadeIn}
             >
-              Sansthan Samiti Soft established in year 2000 with its existence in I.T. Training, Software development, I.T. Enabled services with vast experience with the pioneer company and clients in India and abroad. Icall soft became Icall Soft Pvt. Ltd. in the year of 2002. Since its foundation it was engaged in imparting training in I.T for corporate clients.
+              Sansthan Samiti Soft established in year 2000 with its existence in I.T. Training, Software development, I.T. Enabled services with vast experience with the pioneer company and clients in India and abroad. Balaji Shikshan Sansthan Samiti in the year of 2002. Since its foundation it was engaged in imparting training in I.T for corporate clients.
             </motion.p>
           </motion.div>
 
@@ -110,7 +110,7 @@ const AboutPage = () => {
               variants={fadeIn}
             >
               With the passage of time we identified new opportunities in the field of training, particularly the Pre-license training of insurance agents as per IRDA (Insurance Regulatory & Development Authority) regulations. Understanding the needs of E-learning, our organization entered into e-learning with{' '}
-              <a href="https://www.icallinsurance.com" className="text-blue-600 hover:underline">
+              <a href="https://balajitraining.in/" className="text-blue-600 hover:underline">
                 https://balajitraining.in/
               </a>{' '}
               for insurance agents.
@@ -133,7 +133,7 @@ const AboutPage = () => {
               variants={fadeIn}
             >
               Our e-learning platform{' '}
-              <a href="https://www.icallinsurance.com" className="text-blue-600 hover:underline">
+              <a href="https://balajitraining.in/" className="text-blue-600 hover:underline">
                 https://balajitraining.in/
               </a>{' '}
               enables insurance agents to complete their training without boundaries of time and location. This innovation has allowed us to serve thousands of insurance agents every year for major multinational insurance companies.
