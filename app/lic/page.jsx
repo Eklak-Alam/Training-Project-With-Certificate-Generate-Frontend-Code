@@ -130,7 +130,7 @@ const LICVerificationPage = () => {
                 className="text-lg text-gray-600 max-w-2xl mx-auto"
                 variants={itemVariants}
               >
-                Verify the authenticity of training certificates issued by iCall Soft Pvt. Ltd.
+                Verify the authenticity of training certificates issued by Balaji Shikshan Sansthan Samiti.
               </motion.p>
             </motion.div>
 

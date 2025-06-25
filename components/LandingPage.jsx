@@ -1,9 +1,21 @@
 'use client';
 import { motion } from 'framer-motion';
 import { FaCheckCircle, FaChalkboardTeacher, FaCertificate, FaSearch, FaArrowRight } from 'react-icons/fa';
+import { ChevronDown, ChevronUp, Download, XCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import Image from 'next/image';
 
 export default function Home() {
+
+    const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+    // const [showImageModal, setShowImageModal] = useState(false);
+
+
+    const toggleAccordion = () => {
+      setIsAccordionOpen(!isAccordionOpen);
+    };  
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Hero Section */}
@@ -257,29 +269,95 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonial Section */}
-      {/* <section className="py-16 px-4 bg-blue-800 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-1 rounded-full mb-4">
-            Student Feedback
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8">
-            What Our Students Say
-          </h2>
+      <section className="my-16 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="bg-white rounded-xl shadow-md p-6 max-w-4xl mx-auto"
+        >
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">ACCREDITATION LETTER</h2>
           
-          <div className="bg-white/10 p-8 rounded-xl mb-8">
-            <p className="text-xl italic mb-6">
-              "Get expert insurance training from Suresh Mandiyal at Balaji Training. Our 25-hour and 15-hour pre-license and renewal programs for Life, General, and Health Insurance help you build a successful career."
-            </p>
-            <div className="font-bold">Akash Varma</div>
-            <div className="text-blue-200">Certified Insurance Agent</div>
+          {/* Clickable text version */}
+          {/* <div 
+            className="flex items-center justify-center space-x-2 text-blue-600 cursor-pointer mb-4"
+            onClick={() => setShowImageModal(true)}
+          >
+            <span className="font-medium hover:underline">Click to view accreditation letter</span>
+            <Download size={18} />
+          </div> */}
+          
+          {/* OR Accordion version */}
+          <div className="border-t border-gray-200 pt-4">
+            <button
+              onClick={toggleAccordion}
+              className="flex items-center justify-between w-full text-left text-gray-700 font-medium"
+            >
+              <span>View Accreditation Letter</span>
+              {isAccordionOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </button>
+            
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: isAccordionOpen ? 'auto' : 0,
+                opacity: isAccordionOpen ? 1 : 0
+              }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <Image
+                  src="/logo2.webp" // Replace with your image path
+                  alt="Accreditation Letter"
+                  width={800}
+                  height={1000}
+                  className="w-full h-auto cursor-pointer"
+                  onClick={() => setShowImageModal(true)}
+                />
+              </div>
+            </motion.div>
           </div>
-          
-          <Link href="/testimonials" className="inline-flex items-center text-yellow-300 font-semibold hover:text-yellow-200">
-            Read more testimonials <FaArrowRight className="ml-2" />
-          </Link>
+        </motion.div>
+      </section>
+
+      {/* Image Modal */}
+      {/* {showImageModal && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="relative bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto"
+          >
+            <button
+              onClick={() => setShowImageModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <XCircle size={24} />
+            </button>
+            <div className="p-6">
+              <Image
+                src="/logo2.webp" // Replace with your image path
+                alt="Accreditation Letter"
+                width={1000}
+                height={1400}
+                className="w-full h-auto"
+              />
+              <div className="mt-4 flex justify-center">
+                <a
+                  href="/path-to-your-accreditation-letter-image.jpg"
+                  download="accreditation-letter.jpg"
+                  className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg"
+                >
+                  <Download className="mr-2" size={18} />
+                  Download Letter
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </section> */}
+      )} */}
 
       {/* CTA Section */}
       <section className="py-16 px-4 bg-gray-900 text-white">

@@ -184,7 +184,7 @@ const Footer = () => {
               className="h-16 mr-4 object-contain"
             />
             <a 
-              href="https://www.icallinsurance.com" 
+              href="https://balajitraining.in/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300"
@@ -206,7 +206,7 @@ const Footer = () => {
               ))}
             </div>
             <p className="text-gray-400">
-              © {new Date().getFullYear()} Balaji Insurance Training Soft Pvt Ltd. All rights reserved.
+              © {new Date().getFullYear()} Balaji Shikshan Sansthan Samiti. All rights reserved.
             </p>
           </div>
         </motion.div>

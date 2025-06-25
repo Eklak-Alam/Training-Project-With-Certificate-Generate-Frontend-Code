@@ -51,7 +51,7 @@ const AboutPage = () => {
         >
           <motion.div variants={itemVariants} className="mb-16 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              About <span className="text-blue-600">Icall Soft</span>
+              About <span className="text-blue-600">Balaji Shikshan Sansthan Samiti</span>
             </h1>
             <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
           </motion.div>
