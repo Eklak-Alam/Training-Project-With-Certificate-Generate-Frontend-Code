@@ -309,7 +309,7 @@ export default function Home() {
             >
               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <Image
-                  src="/logo2.webp" // Replace with your image path
+                  src="/prove.jpg" // Replace with your image path
                   alt="Accreditation Letter"
                   width={800}
                   height={1000}
