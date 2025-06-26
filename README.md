@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🌐 Project Overview
+A modern, responsive frontend for a Student Management System built with Next.js that:
 
-## Getting Started
+Manages student records
 
-First, run the development server:
+Generates training certificates (PNG/PDF/ZIP)
 
-```bash
+Displays team information with interactive contact options
+
+Connects to a Spring Boot backend API
+
+📂 Project Structure
+frontend/
+├── app/                   # Next.js 13+ app router
+│   ├── dashboard/         # Admin dashboard pages
+│   ├── contact/           # Contact and team pages
+│   └── layout.js          # Root layout
+├── components/            # Reusable UI components
+│   ├── Certificate/       # Certificate generation
+│   ├── Forms/            # All form components
+│   └── UI/               # Generic components
+├── context/               # API and application state
+│   └── api-context.js     # Axios API configuration
+├── public/                # Static assets
+│   ├── certificates/      # Certificate templates
+│   ├── images/            # Team photos/logos
+│   └── samples/           # Sample documents
+└── styles/                # Global styles
+
+⚡ Key Features
+Dynamic Certificate Generation
+
+PNG, PDF, and ZIP export options
+
+Customizable templates
+
+Bulk processing
+
+Admin Dashboard
+
+Student record management
+
+Data visualization
+
+Responsive design
+
+Team Management
+
+Interactive contact cards
+
+Direct WhatsApp/email/phone links
+
+Animated presentation
+
+
+🚀 Getting Started
+Prerequisites
+Node.js v18+
+
+npm/yarn/pnpm
+
+Installation
+
+# Clone repository
+git clone https://github.com/your-repo/student-management-system.git
+cd student-management-system/frontend
+
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at http://localhost:3000
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+API Endpoints
+Method	Endpoint	Description
+GET	/api/students	Fetch all students
+POST	/api/students	Add new student
+GET	/api/certificates/generate	Generate certificates
+more....
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🧩 Components Breakdown
+1. Certificate Generation
+Components: CertificateTemplate, BulkCertificateGenerator
 
-## Learn More
+Tech: html-to-image, jsPDF, JSZip
 
-To learn more about Next.js, take a look at the following resources:
+Features:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Real-time preview
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Quality adjustment
 
-## Deploy on Vercel
+Batch processing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Team Management
+Component: TeamCard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tech: Framer Motion, React Icons
+
+Features:
+
+Hover animations
+
+Direct contact links
+
+Responsive grid
+
+🔧 Troubleshooting Guide
+Symptom	Solution
+Certificate generation fails	Check browser console for CORS errors
+API calls not working	Verify backend is running on port 8080
+Missing styles	Run npm install tailwindcss
+Animation issues	Ensure Framer Motion is v12+
