@@ -53,7 +53,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
     await Promise.all([
       loadImage('/logo.png'),
       loadImage('/stamp.png'),
-      loadImage('/sign.png'),
+      loadImage('/sign2.png'),
       document.fonts.ready
     ]);
 
@@ -183,7 +183,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
               color: '#333',
               marginTop: '20px'
             }}>
-              25 Hrs Training Completion Certificate (Online)
+              Training Completion Certificate (Online)
             </h2>
           </div>
         </div>
@@ -203,9 +203,8 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
           
           <div style={{
             margin: '12px 0',
-            fontSize: '20px',
+            fontSize: '27px',
             fontWeight: 'bold',
-            textDecoration: 'underline',
             color: 'black',
             minHeight: '26px'
           }}>
@@ -221,7 +220,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
           <p style={{ 
             fontWeight: 'bold', 
             margin: '10px 0',
-            fontSize: '18px'
+            fontSize: '25px'
           }}>
             {studentData.startDate} to {studentData.endDate}
           </p>
@@ -311,7 +310,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
                 justifyContent: 'flex-start'
               }}>
                 <img 
-                  src="/sign.png" 
+                  src="/sign2.png" 
                   alt="Signature"
                   style={{
                     height: '55px',
@@ -327,7 +326,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
                 width: '150px',
                 fontSize: '15px'
               }}>
-                Rekha Kohli
+                Suresh Kumar Mahawar
               </p>
               <p style={{ fontSize: '14px' }}>In Charge</p>
             </div>

@@ -71,7 +71,7 @@ const ContactPage = () => {
       contacts: []
     },
     {
-      name: "Rekha Kohli",
+      name: "Suresh Kumar Mahawar",
       position: "Incharge",
       contacts: [
         { type: "phone", value: "9352793163", icon: <Phone className="text-blue-500" size={16} /> },

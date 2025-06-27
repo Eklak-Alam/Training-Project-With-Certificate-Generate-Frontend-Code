@@ -289,7 +289,7 @@ const LICVerificationPage = () => {
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-gray-100">
+                    {/* <div className="pt-4 border-t border-gray-100">
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -298,7 +298,7 @@ const LICVerificationPage = () => {
                         <Download className="mr-2" size={18} />
                         Download Certificate
                       </motion.button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </motion.div>
