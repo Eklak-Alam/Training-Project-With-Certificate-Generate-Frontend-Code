@@ -261,7 +261,7 @@ export default function Home() {
                   <span className="text-gray-700">Employer Access</span>
                 </li>
               </ul>
-              <Link href="/lic" className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors">
+              <Link href="/verification-certificate" className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors">
                 Verify Now <FaArrowRight className="ml-2" />
               </Link>
             </motion.div>

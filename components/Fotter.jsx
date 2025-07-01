@@ -15,7 +15,7 @@ const Footer = () => {
   const quickLinks = [
     { name: "Home", url: "/" },
     { name: "About Us", url: "/about" },
-    { name: "LIC Certificate", url: "/lic" },
+    { name: "LIC Certificate", url: "/verification-certificate" },
     { name: "Help Center", url: "/help" },
     { name: "Contact Us", url: "/contact" },
   ];

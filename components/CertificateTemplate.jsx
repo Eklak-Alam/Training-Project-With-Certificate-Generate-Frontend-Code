@@ -323,7 +323,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
                 fontWeight: 'bold',
                 borderTop: '1px solid #000',
                 paddingTop: '2px',
-                width: '150px',
+                width: '170px',
                 fontSize: '15px'
               }}>
                 Suresh Kumar Mahawar

@@ -134,7 +134,7 @@ const CoursesPage = () => {
               <Link href='/contact' className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center">
                 Contact Advisor <FaArrowRight className="ml-2" />
               </Link>
-              <Link href='/lic' className="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
+              <Link href='/verification-certificate' className="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
                 Download Certificate
               </Link>
             </div>

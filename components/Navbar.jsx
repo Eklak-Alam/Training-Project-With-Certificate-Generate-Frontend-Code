@@ -56,7 +56,7 @@ const Navbar = () => {
     { name: 'Help', path: '/help', icon: <HelpCircle size={20} /> },
     { name: 'FAQs', path: '/faqs', icon: <FileText size={20} /> },
     { name: 'Contact', path: '/contact', icon: <Phone size={20} /> },
-    { name: 'LIC', path: '/lic', icon: <FileText size={20} /> },
+    { name: 'Verification Certificate', path: '/verification-certificate', icon: <FileText size={20} /> },
     ...(isLoggedIn ? [
       { 
         name: 'Dashboard', 

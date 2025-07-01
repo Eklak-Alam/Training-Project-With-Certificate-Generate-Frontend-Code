@@ -117,7 +117,7 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
 
             // Add to ZIP
             certificateFolder.file(
-              `Balaji_Certificate_${student.panNumber}.png`,
+              `Balaji_Certificate_${student.name}.png`,
               dataUrl.split(',')[1],
               { base64: true }
             );
