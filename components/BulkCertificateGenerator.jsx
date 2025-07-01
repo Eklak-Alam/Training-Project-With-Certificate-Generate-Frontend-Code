@@ -15,13 +15,17 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [zipBlob, setZipBlob] = useState(null);
+  const [useLastUploaded, setUseLastUploaded] = useState(false); // New state for toggle
   const cancelRef = useRef(false);
 
   const fetchStudents = async () => {
     setIsFetching(true);
     setError('');
     try {
-      const data = await student.getAll();
+      const data = useLastUploaded 
+        ? await student.getLastUploaded() 
+        : await student.getAll();
+      
       if (data && Array.isArray(data)) {
         setStudents(data);
       } else {
@@ -36,7 +40,16 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
     }
   };
 
-  const cancelGeneration = () => {
+  // Toggle between all students and last uploaded
+  const toggleLastUploaded = () => {
+    setUseLastUploaded(!useLastUploaded);
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, [useLastUploaded]); // Refetch when toggle changes
+
+    const cancelGeneration = () => {
     cancelRef.current = true;
     setIsLoading(false);
     setError('Certificate generation cancelled');
@@ -64,14 +77,11 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
       let generatedCount = 0;
 
       // Create a temporary container for rendering
-     const container = document.createElement('div');
+      const container = document.createElement('div');
       container.style.position = 'absolute';
       container.style.left = '-9999px';
       container.style.width = '794px'; // A4 width in pixels
-      container.style.height = 'auto'; // Let content determine height
-      container.style.overflow = 'hidden';
-      container.style.padding = '0';
-      container.style.margin = '0';
+      container.style.height = 'auto';
       document.body.appendChild(container);
       const { createRoot } = await import('react-dom/client');
       const root = createRoot(container);
@@ -87,37 +97,26 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
 
         await new Promise(async (resolve) => {
           try {
-            // Render the certificate in the temporary container
             root.render(<CertificateTemplate studentData={student} />);
-            
-            // Wait for rendering to complete
             await new Promise(r => setTimeout(r, 100));
 
-            // Get the rendered element
             const certificateElement = container.firstChild;
             if (!certificateElement) {
               throw new Error('Certificate element not rendered');
             }
 
-            // Set explicit height after rendering to match content
             certificateElement.style.height = '297mm';
-            certificateElement.style.overflow = 'hidden';
 
-            // Generate PNG with reduced quality
             const { toPng } = await import('html-to-image');
             const dataUrl = await toPng(certificateElement, {
-              quality: 0.5,
-              pixelRatio: 1,
+              quality: 0.7, // Slightly better quality
+              pixelRatio: 1.5, // Better resolution
               backgroundColor: 'white',
               cacheBust: true,
-              filter: (node) => {
-                return !(node instanceof HTMLButtonElement);
-              }
             });
 
-            // Add to ZIP
             certificateFolder.file(
-              `Balaji_Certificate_${student.name}.png`,
+              `Certificate_${student.name.replace(/\s+/g, '_')}.png`,
               dataUrl.split(',')[1],
               { base64: true }
             );
@@ -132,7 +131,6 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
         });
       }
 
-      // Clean up temporary container
       root.unmount();
       document.body.removeChild(container);
 
@@ -181,12 +179,28 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
 
   return (
     <div className="space-y-6">
-      {/* Student Count */}
+      {/* Mode Toggle and Student Count */}
       <div className="bg-blue-50 p-4 rounded-lg">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="font-medium text-blue-800">Students Found</h2>
-            <p className="text-2xl font-bold text-blue-900 mt-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h2 className="font-medium text-blue-800">
+                {useLastUploaded ? 'Last Uploaded Students' : 'All Students'}
+              </h2>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer" 
+                  checked={useLastUploaded}
+                  onChange={toggleLastUploaded}
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <span className="ml-2 text-sm font-medium text-gray-700">
+                  {useLastUploaded ? 'Last Upload' : 'All Data'}
+                </span>
+              </label>
+            </div>
+            <p className="text-2xl font-bold text-blue-900">
               {students.length} {students.length === 1 ? 'student' : 'students'}
             </p>
           </div>

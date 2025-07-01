@@ -293,6 +293,128 @@ export const ApiProvider = ({ children }) => {
         throw error;
       }
     },
+
+
+    getLastUploaded: async () => {
+      try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+              throw new Error("Authentication required");
+          }
+
+          const response = await fetch(`${BASE_URL}/student/last-uploaded`, {
+              method: "GET",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+              },
+              credentials: "include",
+          });
+
+          // Handle 401 specifically
+          if (response.status === 401) {
+              // Clear invalid token
+              localStorage.removeItem("token");
+              throw new Error("Session expired. Please login again.");
+          }
+
+          if (!response.ok) {
+              // Try to get error message, but handle non-JSON responses
+              const errorText = await response.text();
+              try {
+                  const errorData = JSON.parse(errorText);
+                  throw new Error(errorData.message || "Failed to fetch last uploaded students");
+              } catch {
+                  throw new Error(errorText || "Failed to fetch last uploaded students");
+              }
+          }
+
+          return await response.json();
+      } catch (error) {
+          console.error("Error fetching last uploaded students:", error);
+          throw error;
+      }
+    },
+
+
+
+    verifyUserCredentials: async (username, email) => {
+        try {
+            const response = await fetch(`${BASE_URL}/auth/verify-user-credentials`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({ username, email }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Verification failed");
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error("Error verifying user credentials:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Update user password after verification
+     */
+    updateUserPassword: async (username, newPassword) => {
+        try {
+
+            const response = await fetch(`${BASE_URL}/auth/update-user-password`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, newPassword }),
+            });
+
+            // Handle 401 specifically
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || "Session expired. Please login again.");
+            }
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                try {
+                    const errorData = JSON.parse(errorText);
+                    throw new Error(errorData.message || "Password update failed");
+                } catch {
+                    throw new Error(errorText || "Password update failed");
+                }
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error("Error updating password:", {
+                message: error.message,
+                stack: error.stack,
+            });
+            throw error;
+        }
+    },
+
+    resetPassword: async (username, email, newPassword) => {
+        try {
+            // First verify credentials
+            await student.verifyUserCredentials(username, email);
+            
+            // Then update password
+            return await student.updateUserPassword(username, newPassword);
+        } catch (error) {
+            console.error("Error in password reset:", error);
+            throw error;
+        }
+    },
+    
   };
 
   // Admin related functions
