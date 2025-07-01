@@ -288,7 +288,7 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
             </div>
             <div>
               <p><strong>BRANCH:</strong> {studentData.branch}</p>
-              <p><strong>CERTIFICATE REF.:</strong> BS{studentData.srNo?.toString().padStart(4, '0')}</p>
+              <p><strong>CERTIFICATE REF:</strong> {studentData.srNo?.toString().padStart(4, '0')}</p>
             </div>
           </div>
 
