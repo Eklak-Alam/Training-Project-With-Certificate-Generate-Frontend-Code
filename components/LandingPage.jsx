@@ -17,7 +17,7 @@ export default function Home() {
     };  
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-white overflow-x-hidden pt-5">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-blue-900 to-blue-700 text-white pt-24 pb-16 md:pt-32 md:pb-24 px-4">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
@@ -82,16 +82,16 @@ export default function Home() {
             </motion.div>
           </div>
           
-          <motion.div 
+         <motion.div 
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="relative h-80 md:h-96 lg:h-[500px]"
+            className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[500px] mx-auto"
           >
             <img
-              src="https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_400/https://balajitraining.in/wp-content/uploads/2025/03/Untitled-design.png" // Replace with your actual hero image path
+              src="/image1.jpg"
               alt="Insurance Training"
-              className="object-contain"
+              className="w-full h-full object-cover rounded-2xl shadow-lg"
             />
           </motion.div>
         </div>
@@ -149,11 +149,11 @@ export default function Home() {
               </Link>
             </div>
             
-            <div className="relative h-80 md:h-96 bg-gray-100 rounded-xl overflow-hidden">
+            <div className="relative h-80 md:h-96 rounded-xl overflow-hidden">
               <img
-                src="https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_600/https://balajitraining.in/wp-content/uploads/2025/03/Untitled-design-4.png" // Replace with your about image
+                src="/image2.jpg" // Replace with your about image
                 alt="About Balaji Training"
-                className="object-cover"
+                className="w-full h-full object-contain rounded-2xl"
               />
             </div>
           </div>
@@ -379,13 +379,13 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
+          {/* <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
             <img
               src="https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_320/https://balajitraining.in/wp-content/uploads/2025/03/Balaji-Training.png" // Replace with your CTA image
               alt="Start Your Insurance Career"
               className="opacity-80 w-full h-full object-contain"
             />
-          </div>
+          </div> */}
         </div>
       </section>
     </div>
