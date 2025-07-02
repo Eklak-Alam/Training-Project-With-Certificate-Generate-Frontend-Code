@@ -366,7 +366,6 @@ export const ApiProvider = ({ children }) => {
      */
     updateUserPassword: async (username, newPassword) => {
         try {
-
             const response = await fetch(`${BASE_URL}/auth/update-user-password`, {
                 method: "PUT",
                 headers: {
