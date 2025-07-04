@@ -109,8 +109,8 @@ const BulkCertificateGenerator = ({ setSuccessMessage, setErrorMessage }) => {
 
             const { toPng } = await import('html-to-image');
             const dataUrl = await toPng(certificateElement, {
-              quality: 0.7, // Slightly better quality
-              pixelRatio: 1.5, // Better resolution
+              quality: 0.6, // Slightly better quality
+              pixelRatio: 1.2, // Better resolution
               backgroundColor: 'white',
               cacheBust: true,
             });

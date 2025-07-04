@@ -116,12 +116,12 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
   if (!studentData) return null;
 
   return (
-     <div className="w-full">
+     <div className="w-full overflow-auto">
       <div 
         ref={certificateRef}
         style={{
           width: '210mm',
-          height: '297mm',
+          height: '310mm',
           padding: '15px 25px',
           boxSizing: 'border-box',
           fontFamily: "'Times New Roman', serif",
