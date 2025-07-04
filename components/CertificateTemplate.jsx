@@ -68,8 +68,8 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
       backgroundColor: '#ffffff',
       cacheBust: true,
       style: {
-        width: '210mm',
-        height: '297mm',
+        width: '794px',
+        height: '1141px',
         backgroundColor: '#ffffff',
       },
       filter: (node) => {
@@ -120,8 +120,8 @@ const convertToJpeg = async (dataUrl, quality = 0.7) => {
       <div 
         ref={certificateRef}
         style={{
-          width: '210mm',
-          height: '310mm',
+          width: '794px',
+          height: '1141px',
           padding: '15px 25px',
           boxSizing: 'border-box',
           fontFamily: "'Times New Roman', serif",
